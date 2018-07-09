@@ -10,7 +10,6 @@
     :target: https://consensys-utils.readthedocs.io/en/stable/?badge=stable
     :alt: Documentation Status
 
-https://travis-ci.org/ConsenSys/python-utils.svg?branch=master
 ConsenSys-Utils
 ===============
 

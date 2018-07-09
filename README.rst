@@ -1,15 +1,16 @@
-.. image:: https://travis-ci.org/ConsenSys/consensys-utils.svg?branch=master
-    :target: https://travis-ci.org/ConsenSys/consensys-utils
+.. image:: https://travis-ci.org/ConsenSys/python-utils.svg?branch=master
+    :target: https://travis-ci.org/ConsenSys/python-utils
     :alt: Build Status
 
-.. image:: https://codecov.io/gh/ConsenSys/consensys-utils/branch/master/graph/badge.svg
-    :target: https://codecov.io/gh/ConsenSys/consensys-utils
+.. image:: https://codecov.io/gh/ConsenSys/python-utils/branch/master/graph/badge.svg
+    :target: https://codecov.io/gh/ConsenSys/python-utils
     :alt: Coverage
 
 .. image:: https://readthedocs.org/projects/consensys-utils/badge/?version=stable
     :target: https://consensys-utils.readthedocs.io/en/stable/?badge=stable
     :alt: Documentation Status
 
+https://travis-ci.org/ConsenSys/python-utils.svg?branch=master
 ConsenSys-Utils
 ===============
 

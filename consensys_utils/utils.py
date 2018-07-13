@@ -22,7 +22,7 @@ def import_optional_module(name):
     """
     try:
         return import_module(name)
-    except ModuleNotFoundError:
+    except ImportError:
         # Get name of the module from which the import_optional_module is called
         module = inspect.getmodule(inspect.stack()[1][0])
-        raise ModuleNotFoundError("To use '{}' make sure to have '{}' installed".format(module.__name__, name))
+        raise ImportError("To use '{}' make sure to have '{}' installed".format(module.__name__, name))

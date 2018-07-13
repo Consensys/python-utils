@@ -34,7 +34,7 @@ def set_env_vars(env_vars_to_set):
     for var, new_value, old_value in vars:
         if new_value is None and old_value is not None:
             del os.environ[var]
-        elif new_value is not Nonde:
+        elif new_value is not None:
             os.environ[var] = new_value
 
     def reset_env_vars():

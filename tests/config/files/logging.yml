@@ -1,0 +1,44 @@
+# Log configuration file
+
+version: 1
+formatters:
+  line: # One line log formatter
+    class: logging.Formatter
+    format: "%(asctime)s %(name)-15s %(levelname)-8s %(processName)-10s [<ID=%(id)s>] %(message)s"
+
+  # Log formatter used to
+  logstash:
+    '()': app.logging.LogstashFormatter
+
+filters:
+  # Filter that enrich log record with request information such as a its uuid
+  request:
+    '()': app.logging.RequestFilter
+  id:
+    '()': app.logging.IDFilter
+
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    filters: [id]
+    formatter: line
+    stream: ext://sys.stdout
+
+  # Handler that send log into a logstash instance
+  logstash:
+    class: logstash.TCPLogstashHandler # uses a default formatter
+    formatter: logstash
+    level: DEBUG
+    filters: [id]
+    version: 1
+    host: logstash
+    port: 5000
+
+loggers:
+  # Logger for the application
+  app:
+    level: DEBUG
+    handlers: [console]
+    propagate: False # does not propagate to root (ensuring information is not logged twice)

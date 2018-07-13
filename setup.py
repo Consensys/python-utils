@@ -20,6 +20,12 @@ def read(file_name):
         return ''
 
 
+config_dep = [
+    'cfg-loader>=0.2.0',
+]
+
+all_dep = config_dep
+
 setup(
     name='ConsenSys-Utils',
     version='0.1.0-dev',
@@ -47,6 +53,8 @@ setup(
             'sphinx',
             'sphinx_rtd_theme',
         ],
+        'config': config_dep,
+        'all': all_dep,
     },
     zip_safe=False,
     platforms='any',

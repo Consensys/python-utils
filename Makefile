@@ -38,7 +38,7 @@ venv:
 	@virtualenv $(VENV) -p $(INTERPRETER)
 
 install-dev:
-	@$(PIP) install -q -e .[dev]
+	@$(PIP) install -q -e .[dev,all]
 
 develop: clean-pyc install-dev
 

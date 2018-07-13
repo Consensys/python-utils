@@ -8,4 +8,11 @@
 
 import os
 
+import pytest
+
 TEST_DIR = os.path.dirname(__file__)
+
+
+@pytest.fixture(scope='session')
+def test_dir():
+    yield TEST_DIR

@@ -8,6 +8,8 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
+from .logging import LoggingConfigSchema
+from .wsgi import WSGIConfigSchema
 from ...utils import import_optional_module
 
 cfg_loader = import_optional_module('cfg_loader')
@@ -30,17 +32,10 @@ class BaseConfigSchema(cfg_loader.ConfigSchema):
         * - ``APP_NAME``
           - Required name of the application
           - Required
-
-        * - ``BASE_DIR``
-          - Required valid path to the base directory of the application
-          - Required
     """
 
     # Name of the app
     APP_NAME = fields.Str(required=True)
-
-    # Application directory
-    BASE_DIR = cfg_loader.fields.Path(required=True)
 
 
 class CookieConfigSchema(cfg_loader.ConfigSchema):
@@ -245,3 +240,15 @@ class FlaskConfigSchema(cfg_loader.ConfigSchema):
 
     swagger = fields.Nested(SwaggerConfigSchema,
                             missing=SwaggerConfigSchema().load({}))
+
+
+class ConfigSchema(cfg_loader.ConfigSchema):
+    """Configuration schema"""
+
+    flask = cfg_loader.fields.UnwrapNested(FlaskConfigSchema,
+                                           required=True)
+
+    wsgi = fields.Nested(WSGIConfigSchema,
+                         missing={})
+
+    logging = fields.Nested(LoggingConfigSchema)

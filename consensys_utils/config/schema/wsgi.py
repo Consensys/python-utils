@@ -51,9 +51,8 @@ class WSGIConfigSchema(cfg_loader.ConfigSchema):
 
         * - ``request_id``
           - Request ID configuration in :class:`RequestIDConfigSchema`
-          - :class:`RequestIDConfigSchema` default
+          - ``None``
     """
 
     # Request id middleware section
-    request_id = fields.Nested(RequestIDConfigSchema,
-                               RequestIDConfigSchema().load({}))
+    request_id = fields.Nested(RequestIDConfigSchema)

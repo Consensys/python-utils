@@ -1,0 +1,24 @@
+# Log configuration file
+
+version: 1
+
+formatters:
+  line: # One line log formatter
+    class: logging.Formatter
+    format: "%(asctime)s %(name)-15s %(levelname)-8s %(message)s <ID=%(id)s>"
+
+filters:
+  request:
+    '()': consensys_utils.flask.logging.RequestIDFilter
+
+handlers:
+  test:
+    class: logging.StreamHandler
+    level: DEBUG
+    filters: [request]
+    formatter: line
+
+loggers:
+  app:
+    level: DEBUG
+    handlers: [test]

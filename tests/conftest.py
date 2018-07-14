@@ -16,3 +16,8 @@ TEST_DIR = os.path.dirname(__file__)
 @pytest.fixture(scope='session')
 def test_dir():
     yield TEST_DIR
+
+
+@pytest.fixture(scope='session')
+def files_dir(test_dir):
+    yield os.path.join(test_dir, 'files')

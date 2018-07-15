@@ -8,9 +8,7 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from ...utils import import_optional_module
-
-flasgger = import_optional_module('flasgger')
+import flasgger
 
 
 class Swagger(flasgger.Swagger):

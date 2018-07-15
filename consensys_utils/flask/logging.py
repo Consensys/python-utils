@@ -11,10 +11,9 @@
 
 import logging
 
-from ..logging import IDFilter, create_logger as _create_logger
-from ..utils import import_optional_module
+import flask
 
-flask = import_optional_module('flask')
+from ..logging import IDFilter, create_logger as _create_logger
 
 
 class RequestIDFilter(IDFilter):

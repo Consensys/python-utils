@@ -8,12 +8,11 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
+import cfg_loader
+from marshmallow import fields
+
 from .logging import LoggingConfigSchema
 from .wsgi import WSGIConfigSchema
-from ...utils import import_optional_module
-
-cfg_loader = import_optional_module('cfg_loader')
-fields = import_optional_module('marshmallow.fields')
 
 
 class BaseConfigSchema(cfg_loader.ConfigSchema):

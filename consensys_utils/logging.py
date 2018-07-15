@@ -33,8 +33,7 @@ def create_logger(config):
 
     if 'LOGGING_CONFIG_PATH' in config:  # pragma: no branch
         # Assumes we are trying to load configuration from a .yml file
-        from .utils import import_optional_module
-        cfg_loader = import_optional_module('cfg_loader')
+        import cfg_loader
         config = cfg_loader.utils.parse_yaml_file(config['LOGGING_CONFIG_PATH'])
 
     if config:  # pragma: no branch

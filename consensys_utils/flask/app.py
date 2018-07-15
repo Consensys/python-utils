@@ -8,6 +8,8 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
+import flask
+
 from .blueprints import register_blueprints
 from .config import Config, set_app_config
 from .extensions import initialize_extensions
@@ -15,9 +17,6 @@ from .hooks import set_hooks
 from .logging import create_logger
 from .wsgi import apply_middlewares
 from ..config.schema.flask import ConfigSchema
-from ..utils import import_optional_module
-
-flask = import_optional_module('flask')
 
 
 class Flask(flask.Flask):

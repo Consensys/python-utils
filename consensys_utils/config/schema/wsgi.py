@@ -8,10 +8,8 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from ...utils import import_optional_module
-
-cfg_loader = import_optional_module('cfg_loader')
-fields = import_optional_module('marshmallow.fields')
+import cfg_loader
+from marshmallow import fields
 
 
 class RequestIDConfigSchema(cfg_loader.ConfigSchema):

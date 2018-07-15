@@ -8,9 +8,7 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from ...utils import import_optional_module
-
-healthcheck = import_optional_module('healthcheck')
+import healthcheck
 
 
 class HealthCheck(healthcheck.HealthCheck):

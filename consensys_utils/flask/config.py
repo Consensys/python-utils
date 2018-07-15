@@ -8,10 +8,9 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from ..config import create_yaml_config_loader
-from ..utils import import_optional_module
+import flask
 
-flask = import_optional_module('flask')
+from ..config import create_yaml_config_loader
 
 
 class Config(flask.Config):

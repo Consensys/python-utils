@@ -10,10 +10,6 @@
 
 import os
 
-from ..utils import import_optional_module
-
-import_optional_module('cfg_loader')
-
 from cfg_loader import YamlConfigLoader  # noqa: E402
 
 # configuration file path

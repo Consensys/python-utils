@@ -19,10 +19,10 @@ jobs:
   include:
     - stage: test
       python: 3.5
-      env: TOXENV=py,config,codecov
+      env: TOXENV=py,base,config,flask,codecov
     - stage: test
       python: 3.6
-      env: TOXENV=py,config,codecov
+      env: TOXENV=py,base,config,flask,codecov
     - stage: test
       python: 3.6
       env: TOXENV=lint

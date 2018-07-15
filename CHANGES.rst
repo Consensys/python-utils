@@ -10,8 +10,18 @@ Unreleased
 
 Features
 
-- Utils: implement import_optional_module utility
 - Config: implement config package
+- Flask: implement WSGI middlewares helpers
+- Flask: implement application hooks helpers
+- Flask: implement config features to integrate with `cfg-loader`_
+- Flask: implement flask extensions helpers
+- Flask: implement default extension for healthcheck
+- Flask: implement default extension for Swagger
+- Flask: implement logging features
+- Flask: implement blueprints helpers
+
+.. _cfg-loader: https://github.com/nmvalera/cfg-loader
+
 
 Version 0.0.0
 -------------

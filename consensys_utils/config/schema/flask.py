@@ -221,11 +221,11 @@ class FlaskConfigSchema(cfg_loader.ConfigSchema):
 
         * - ``healthcheck``
           - Healthcheck configuration in :class:`HealthCheckConfigSchema` format
-          - :class:`HealthCheckConfigSchema` default
+          -
 
         * - ``swagger``
           - Swagger configuration in :class:`SwaggerConfigSchema` format
-          - :class:`SwaggerConfigSchema` default
+          -
     """
 
     # Base config section
@@ -235,15 +235,37 @@ class FlaskConfigSchema(cfg_loader.ConfigSchema):
                                              missing=SessionConfigSchema().load({}), prefix='SESSION_')
     PERMANENT_SESSION_LIFETIME = fields.TimeDelta(missing=2678400)
 
-    health = fields.Nested(HealthCheckConfigSchema,
-                           missing=HealthCheckConfigSchema().load({}))
+    health = fields.Nested(HealthCheckConfigSchema)
 
     swagger = fields.Nested(SwaggerConfigSchema,
-                            missing=SwaggerConfigSchema().load({}))
+                            attribute='SWAGGER')
 
 
 class ConfigSchema(cfg_loader.ConfigSchema):
-    """Configuration schema"""
+    """Configuration schema
+
+    Describes and validates against
+
+    .. list-table::
+        :widths: 30 50 20
+        :header-rows: 1
+
+        * - Key
+          - Comment
+          - Default value
+
+        * - ``flask``
+          - Required Flask config in :class:`FlaskConfigSchema` format
+          - **Required**
+
+        * - ``wsgi``
+          - Wsgi configuration in :class:`WSGIConfigSchema` format
+          - ``{}``
+
+        * - ``logging``
+          - Logging configuration in :class:`LoggingConfigSchema` format
+          -
+    """
 
     flask = cfg_loader.fields.UnwrapNested(FlaskConfigSchema,
                                            required=True)

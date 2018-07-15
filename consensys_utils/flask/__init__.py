@@ -8,7 +8,7 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from .app import Flask
+from .app import Flask, create_app
 from .extensions import initialize_extensions
 from .hooks import set_hooks
 from .wsgi import apply_middlewares
@@ -18,4 +18,5 @@ __all__ = [
     'apply_middlewares',
     'initialize_extensions',
     'set_hooks',
+    'create_app',
 ]

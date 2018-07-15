@@ -20,17 +20,24 @@ from consensys_utils.flask.config import set_app_config
 
 @pytest.fixture(scope='session')
 def config_file(files_dir):
-    yield os.path.join(files_dir, 'config.yml')
+    yield os.path.join(files_dir, 'config-test.yml')
 
 
 class ConfigSchemaTest(ConfigSchema):
     """Config schema for test"""
+
     param = fields.Str()
+
+
+class FlaskTest(Flask):
+    """Flask class with custom configuration schema"""
+
+    config_schema = ConfigSchemaTest
 
 
 @pytest.fixture(scope='function')
 def app(config_file):
-    _app = Flask(__name__, config_schema=ConfigSchemaTest)
+    _app = FlaskTest(__name__)
 
     set_app_config(_app, config_file)
 

@@ -28,6 +28,58 @@ Logging
 .. autoclass:: LoggingConfigSchema
     :members:
 
+Flask
+`````
+
+Flask application configuration schemas
+
+.. py:currentmodule:: consensys_utils.config.schema.flask
+
+.. autoclass:: FlaskConfigSchema
+    :members:
+
+Base
+^^^^
+
+.. autoclass:: BaseConfigSchema
+    :members:
+
+Session
+^^^^^^^
+
+.. autoclass:: SessionConfigSchema
+    :members:
+
+.. autoclass:: CookieConfigSchema
+    :members:
+
+Health Check
+^^^^^^^^^^^^
+
+.. autoclass:: HealthCheckConfigSchema
+    :members:
+
+Swagger
+^^^^^^^
+.. autoclass:: SwaggerConfigSchema
+    :members:
+
+WSGI
+````
+
+Flask application configuration schemas
+
+Request ID
+^^^^^^^^^^
+
+.. py:currentmodule:: consensys_utils.config.schema.wsgi
+
+.. autoclass:: WSGIConfigSchema
+    :members:
+
+.. autoclass:: RequestIDConfigSchema
+    :members:
+
 Loader
 ~~~~~~
 

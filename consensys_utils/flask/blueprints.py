@@ -8,8 +8,6 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-DEFAULT_BLUEPRINT_REGISTERS = {}
-
 
 def register_blueprints(app, blueprint_registers=None):
     """Register blueprints on a Flask application
@@ -21,10 +19,6 @@ def register_blueprints(app, blueprint_registers=None):
     """
 
     blueprint_registers = blueprint_registers or {}
-
-    # Set default hooks
-    for blueprint, register in DEFAULT_BLUEPRINT_REGISTERS.items():
-        blueprint_registers.setdefault(blueprint, register)
 
     # Set hooks
     for register in blueprint_registers.values():

@@ -86,10 +86,3 @@ Loader
 .. py:currentmodule:: consensys_utils.config.loader
 
 .. autofunction:: create_yaml_config_loader
-
-Utils
-=====
-
-.. py:currentmodule:: consensys_utils.utils
-
-.. autofunction:: import_optional_module

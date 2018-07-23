@@ -39,6 +39,5 @@ def test_app(logging_config_file, gunicorn_config_file):
     app = WSGIApplication(loader=loader)
 
     assert app.cfg.address == [('', 8080)]
-    assert app.cfg.address == [('', 8080)]
     assert app.cfg.wsgi['request_id']['REQUEST_ID_HEADER'] == 'Test-Request-ID'
     assert app.cfg.worker_class_str == 'async'

@@ -17,7 +17,7 @@ from ..wsgi import header_to_environ_key
 
 
 class Logger(glogging.Logger):
-    """Enrich logger class
+    """Enrich Gunicorn logger class
 
     In particular it overrides the following methods
         - `setup` to load logging configuration from a .yml file
@@ -31,6 +31,7 @@ class Logger(glogging.Logger):
 
 
 class RequestIDLogger(Logger):
+    """Gunicorn logger that handles Request ID header"""
 
     def __init__(self, *args, **kwargs):
         self.request_id_atom = None
@@ -51,10 +52,9 @@ class RequestIDLogger(Logger):
                                                          request_time))
 
         try:
-            # Add an extra id field to be logged in case a request ID header is available
+            # Add an extra id field to be logged for request ID
             self.access_log.info(self.cfg.access_log_format,
                                  safe_atoms,
-                                 extra={'id': safe_atoms[self.request_id_atom]})
-        except Exception:
-            print('Not Okay')
+                                 extra={'id': safe_atoms.get(self.request_id_atom, '-')})
+        except Exception:  # pragma: no cover
             self.error(traceback.format_exc())

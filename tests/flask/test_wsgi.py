@@ -46,8 +46,20 @@ def test_request_id_middleware(client):
 def test_apply_middlewares(client):
     apply_middleware_mock = MagicMock()
 
-    apply_middlewares(client.application, middleware_appliers={'mock': apply_middleware_mock})
+    custom_mock = MagicMock()
+
+    class CustomMiddlewareTest:
+        def __init__(self, wsgi):
+            custom_mock(wsgi)
+
+    middleware_appliers = {
+        'mock': apply_middleware_mock,
+        'custom': CustomMiddlewareTest,
+    }
+
+    apply_middlewares(client.application, middleware_appliers=middleware_appliers)
     assert apply_middleware_mock.call_args_list[0][0][0] == client.application
+    custom_mock.assert_called_once()
 
     apply_middlewares(client.application, middleware_appliers={'request_id': apply_middleware_mock})
     assert apply_middleware_mock.call_args_list[1][0][0] == client.application

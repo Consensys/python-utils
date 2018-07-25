@@ -59,13 +59,17 @@ def initialize_extensions(app, extension_initiators=None):
 
         >>> swag = Swagger(template={'version': '0.3.4-dev'})
 
-        >>> my_extension_initiators = {'swagger': swag.init_app}
+        >>> my_extension_initiators = {'swagger': swag}
 
         >>> initialize_extensions(app, my_extension_initiators)
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
-    :param extensions: Dictionary listing extensions
+    :param extensions: Extensions to initialize on the application.
+        Expects a dictionary in which values are either
+
+        - a Flask extension object (having a callable attribute ``init_app``)
+        - a function that takes a :class:`flask.Flask` as argument and eventually initialize an extension on it
     :type extensions: dict
     """
 
@@ -77,4 +81,7 @@ def initialize_extensions(app, extension_initiators=None):
 
     # Initialize extensions
     for initialize_extension in extension_initiators.values():
-        initialize_extension(app)
+        if hasattr(initialize_extension, 'init_app'):
+            initialize_extension.init_app(app)
+        else:
+            initialize_extension(app)

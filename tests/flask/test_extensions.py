@@ -8,6 +8,9 @@
     :license: BSD, see LICENSE for more details.
 """
 
+from types import SimpleNamespace
+from unittest.mock import MagicMock
+
 import pytest
 from flask import Flask
 
@@ -79,7 +82,17 @@ def test_initialize_extensions_custom(client, config):
     # Declare custom swagger extension
     swagger = Swagger()
 
-    initialize_extensions(client.application, extension_initiators={'swagger': swagger.init_app})
+    # Declares a mocked flask extension
+    init_app_mock = MagicMock()
+    mock_ext = SimpleNamespace(init_app=init_app_mock)
+
+    # Initialize extensions
+    extension_initiators = {
+        'swagger': swagger.init_app,
+        'mock': mock_ext,
+    }
+
+    initialize_extensions(client.application, extension_initiators=extension_initiators)
 
     assert hasattr(client.application, 'swag')
     assert client.application.swag == swagger

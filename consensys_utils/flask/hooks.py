@@ -12,19 +12,18 @@ from flask import request
 
 
 def set_request_id_hook(app):
-    # Set hook for request ID (or correlation ID)
+    """Set a hook for inject request ID
 
+    It basis on application config to get the request header from which to retrieve request ID
+
+    :param app: Flask application
+    :type app: :class:`flask.Flask`
+    """
     if 'wsgi' in app.config and 'request_id' in app.config['wsgi']:  # pragma: no branch
         @app.before_request
         def set_request_id():
             """Set request id"""
-            request.id = request.headers[app.config['wsgi']['request_id']['REQUEST_ID_HEADER']]
-
-    else:
-        @app.before_request
-        def set_request_id():
-            """Set request id"""
-            request.id = '-'
+            request.id = request.headers.get(app.config['wsgi']['request_id']['REQUEST_ID_HEADER']) or '-'
 
 
 DEFAULT_HOOK_SETTERS = {

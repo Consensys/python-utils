@@ -27,9 +27,6 @@ def logging_config_file(files_dir):
 def app():
     _app = Flask(__name__)
 
-    # Set request_id hook
-    set_request_id_hook(_app)
-
     @_app.route('/')
     def test():
         current_app.logger.debug('Test Message')
@@ -47,7 +44,10 @@ def test_default_logging(client, caplog):
 def test_request_id_logging_filter(client, config, caplog, logging_config_file):
     # Set logging config
     config['logging'] = {'LOGGING_CONFIG_PATH': logging_config_file}
+    config['wsgi'] = {'request_id': {'REQUEST_ID_HEADER': 'Test-Request-ID'}}
 
+    # Set request_id hook
+    set_request_id_hook(client.application)
     with caplog.at_level(logging.DEBUG, logger='app'):
         client.get('/')
     assert caplog.records[0].name == 'app'

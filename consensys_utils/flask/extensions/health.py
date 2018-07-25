@@ -12,7 +12,10 @@ import healthcheck
 
 
 class HealthCheck(healthcheck.HealthCheck):
-    """Healthcheck extension"""
+    """Healthcheck extension that declares an health check route
+
+    Healthcheck URL can be set at application initialization by reading app configuration
+    """
 
     def init_app(self, app, path=None):
         path = path or app.config['health']['ENDPOINT_URL']

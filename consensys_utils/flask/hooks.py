@@ -12,7 +12,7 @@ from flask import request
 
 
 def set_request_id_hook(app):
-    """Set a hook for inject request ID
+    """Set a hook to inject request ID
 
     It basis on application config to get the request header from which to retrieve request ID
 
@@ -34,10 +34,44 @@ DEFAULT_HOOK_SETTERS = {
 def set_hooks(app, hook_setters=None):
     """Set hooks on a Flask application
 
+    Example: Adding a new hook
+
+    .. doctest::
+        >>> from flask import Flask, request, current_app
+
+        >>> app = Flask(__name__)
+
+        >>> def set_log_request_hook(app):
+        ...     @app.before_request
+        ...     def log_request():
+        ...         current_app.logger.debug(request)
+
+        >>> my_hook_setters = {'log-request': set_log_request_hook}
+
+        >>> set_hooks(app, my_hook_setters)
+
+    By default it applies
+
+    - ``request_id``: :meth:`set_request_id_hook`
+
+    Example: Overriding default hooks
+
+    .. doctest::
+        >>> def set_custom_request_id_hook(app):
+        ...     @app.before_request
+        ...     def set_request_id():
+        ...         request .id = 'foo'
+
+        >>> my_hook_setters = {'request_id': set_custom_request_id_hook}
+
+        >>> set_hooks(app, my_hook_setters)
+
     :param app: Flask application
     :type app: :class:`flask.Flask`
-    :param hook_setters: Hooks to set on the application
+    :param hook_setters: Hooks to set on the application.
+        Expects functions that takes a :class:`flask.Flask` as argument
     :type hook_setters: dict
+
     """
 
     hook_setters = hook_setters or {}

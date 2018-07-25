@@ -14,12 +14,22 @@ __all__ = [
 
 
 def initialize_health_extension(app):
+    """Initialize healthcheck extension
+
+    :param app: Flask application
+    :type app: :class:`flask.Flask`
+    """
     if 'health' in app.config:  # pragma: no branch
         from .health import health
         health.init_app(app)
 
 
 def initialize_swagger_extension(app):
+    """Initialize Swagger extension
+
+    :param app: Flask application
+    :type app: :class:`flask.Flask`
+    """
     if 'SWAGGER' in app.config:  # pragma: no branch
         from .swagger import swagger
         swagger.init_app(app)
@@ -34,10 +44,29 @@ DEFAULT_EXTENSION_INITIATORS = {
 def initialize_extensions(app, extension_initiators=None):
     """Initialize extensions on a Flask application
 
+    By default it applies
+
+    - ``health``: :meth:`initialize_health_extension`
+    - ``swagger``: :meth:`initialize_swagger_extension`
+
+    Example: Overriding an extension
+
+    .. doctest::
+        >>> from flask import Flask
+        >>> from flasgger import Swagger
+
+        >>> app = Flask(__name__)
+
+        >>> swag = Swagger(template={'version': '0.3.4-dev'})
+
+        >>> my_extension_initiators = {'swagger': swag.init_app}
+
+        >>> initialize_extensions(app, my_extension_initiators)
+
     :param app: Flask application
     :type app: :class:`flask.Flask`
     :param extensions: Dictionary listing extensions
-    :ype extensions: dict
+    :type extensions: dict
     """
 
     extension_initiators = extension_initiators or {}

@@ -12,8 +12,9 @@ import flasgger
 
 
 class Swagger(flasgger.Swagger):
-    """Swagger extension"""
+    """Flask extension that allow integration with Swagger"""
 
+    # TODO: find a better way to inject version, title, and tags at application initialization time
     def __init__(self, *args, template=None, openapi='3.0', version='0.1.0-dev', title='Base App', tags=None, **kwargs):
         template = template or {}
         template.setdefault('openapi', openapi)

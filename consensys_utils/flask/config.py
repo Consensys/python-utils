@@ -14,7 +14,10 @@ import flask
 class Config(flask.Config):
     """Application configuration class
 
-    We overide Flask config to enable configuration loading from .yaml file
+    ConsenSys-Utils slightly overrides :class:`~flask.Config` to enable configuration loading from .yml file
+    using `cfg-loader`_
+
+    .. _`cfg-loader`: https://cfg-loader.readthedocs.io/en/stable/
     """
 
     def from_yaml(self, yaml_config_loader, config_path=None):
@@ -37,8 +40,10 @@ def set_app_config(app, config=None, yaml_config_loader=None, config_path=None):
     :type app: :class:`flask.Flask`
     :param config: Optional Application configuration
     :type config: dict
-    :param config_loader: Optional config loader
-    :type cfg_loader: :class:`cfg_loader.loader.YamlConfigLoader`
+    :param yaml_config_loader: Optional .yml config loader
+    :type yaml_config_loader: :class:`cfg_loader.loader.YamlConfigLoader`
+    :param config_path: Path to the .yml config file
+    :type config_path: str
     """
 
     if config:

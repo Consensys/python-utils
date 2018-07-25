@@ -25,6 +25,7 @@ def app():
 
 def test_register_blueprints(client):
     test_blueprint = Blueprint('test', __name__)
+    test_blueprint2 = Blueprint('test2', __name__)
 
     handler_mock = MagicMock()
 
@@ -33,7 +34,10 @@ def test_register_blueprints(client):
         handler_mock()
         return jsonify({'data': 'test-value'})
 
-    blueprint_registers = {'test': lambda app: app.register_blueprint(test_blueprint)}
+    blueprint_registers = {
+        'test': lambda app: app.register_blueprint(test_blueprint),
+        'test2': test_blueprint2
+    }
 
     register_blueprints(client.application, blueprint_registers=blueprint_registers)
 

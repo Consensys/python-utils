@@ -10,16 +10,12 @@
 
 import datetime
 import logging
-import os
 from types import SimpleNamespace
 
 import pytest
 
 from consensys_utils.gunicorn.config import Config
 from consensys_utils.gunicorn.logging import Logger, RequestIDLogger
-
-
-
 
 
 @pytest.fixture(scope='function')
@@ -35,6 +31,7 @@ def logger(cfg):
 
     yield Logger(cfg)
 
+
 def test_logger(logger):
 
     assert logger.access_log.handlers[0].name == 'test'
@@ -47,9 +44,7 @@ def request_id_logger(cfg):
     yield RequestIDLogger(cfg)
 
 
-
 def test_request_id_logger(request_id_logger, caplog):
-
 
     response = SimpleNamespace(
         status='200', response_length=1024,

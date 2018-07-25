@@ -16,7 +16,7 @@ from .extensions import initialize_extensions
 from .hooks import set_hooks
 from .logging import create_logger
 from .wsgi import apply_middlewares
-from ..config.schema.flask import ConfigSchema
+from ..config import DEFAULT_FLASK_CONFIG_LOADER
 
 
 class Flask(flask.Flask):
@@ -30,21 +30,24 @@ class Flask(flask.Flask):
 
     config_class = Config
 
-    config_schema = ConfigSchema
-
     @flask.helpers.locked_cached_property
     def logger(self):
         return create_logger(self)
 
 
-def create_app(import_name, *args, config_path=None,
+def create_app(import_name, *args,
+               config=None, yaml_config_loader=DEFAULT_FLASK_CONFIG_LOADER, config_path=None,
                middleware_appliers=None, extension_initiators=None, hook_setters=None,
-               blueprint_registers=None,
+               blueprint_registers=None, command_adders=None,
                flask_class=Flask, **kwargs):
     """Create a Flask application
 
     :param import_name: The name of the application package
     :type import_name: str
+    :param config: Optional application config
+    :type config: dict
+    :param yaml_config_loader: Optional config loader
+    :type yaml_config_loader: :class:`cfg_loader.loader.YamlConfigLoader`
     :param config_path: Configuration path
     :type config_path: str
     :param middleware_appliers: Middlewares to apply on the application
@@ -59,12 +62,15 @@ def create_app(import_name, *args, config_path=None,
     :type flask_class: Subclass of :class:`Flask`
     """
 
-    # Declare new Flask application
+    # Declare Flask application
     app = flask_class(import_name, *args, **kwargs)
 
-    # Set flask app configuration
-    set_app_config(app, config_path)
-    app.logger.info("Configuring application for {env}...".format(env=app.config.get('ENV')))
+    # Set application configuration
+    set_app_config(app,
+                   config=config,
+                   yaml_config_loader=yaml_config_loader,
+                   config_path=config_path)
+    app.logger.info("Application configured for {env}...".format(env=app.config.get('ENV')))
 
     # Apply middlewares
     apply_middlewares(app, middleware_appliers=middleware_appliers)

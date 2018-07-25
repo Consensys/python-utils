@@ -14,8 +14,9 @@ import healthcheck
 class HealthCheck(healthcheck.HealthCheck):
     """Healthcheck extension"""
 
-    def init_app(self, app):
-        super().init_app(app, app.config['health']['ENDPOINT_URL'])
+    def init_app(self, app, path=None):
+        path = path or app.config['health']['ENDPOINT_URL']
+        super().init_app(app, path)
 
 
 # Default health extension

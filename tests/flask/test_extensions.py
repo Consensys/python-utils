@@ -68,15 +68,7 @@ def test_custom_swagger_extension(client, config):
     assert client.get('/test-swagger').status_code == 200
 
 
-def test_initialize_extensions_default(client, config):
-    config['health'] = {'ENDPOINT_URL': '/test-healthcheck'}
-
-    initialize_extensions(client.application)
-
-    assert client.get('/test-healthcheck').status_code == 200
-
-
-def test_initialize_extensions_custom(client, config):
+def test_initialize_extensions(client, config):
     config['SWAGGER'] = {'specs': [{'route': '/test-swagger-custom', 'endpoint': 'test-swagger'}]}
 
     # Declare custom swagger extension
@@ -87,12 +79,12 @@ def test_initialize_extensions_custom(client, config):
     mock_ext = SimpleNamespace(init_app=init_app_mock)
 
     # Initialize extensions
-    extension_initiators = {
+    extensions = {
         'swagger': swagger.init_app,
         'mock': mock_ext,
     }
 
-    initialize_extensions(client.application, extension_initiators=extension_initiators)
+    initialize_extensions(client.application, extensions=extensions)
 
     assert hasattr(client.application, 'swag')
     assert client.application.swag == swagger

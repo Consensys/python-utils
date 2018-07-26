@@ -20,12 +20,12 @@ def apply_request_id_middleware(app):
         app.wsgi_app = RequestIDMiddleware(app.wsgi_app, config=app.config['wsgi']['request_id'])
 
 
-DEFAULT_MIDDLEWARE_APPLIERS = {
+DEFAULT_MIDDLEWARES = {
     'request_id': apply_request_id_middleware,
 }
 
 
-def apply_middlewares(app, middleware_appliers=None):
+def apply_middlewares(app, middlewares=None):
     """Apply WSGI middlewares to a Flasks application
 
     Example:
@@ -57,15 +57,10 @@ def apply_middlewares(app, middleware_appliers=None):
         ...              ('WWW-Authenticate', 'Basic realm="Login"')])
         ...         return [b'Login']
 
-        >>> middleware_appliers = {
+        >>> middlewares = {
         ...     'auth': AuthMiddleware,
         ... }
-        >>> apply_middlewares(app, middleware_appliers)
-
-    By default it applies
-
-    - ``request_id``: :meth:`apply_request_id_middleware`
-
+        >>> apply_middlewares(app, middlewares)
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
@@ -76,15 +71,11 @@ def apply_middlewares(app, middleware_appliers=None):
         - A function that takes a :class:`flask.Flask` as argument and even eventually apply a middleware on it
     :type middlewares: dict
     """
-    middleware_appliers = middleware_appliers or {}
-
-    # Set default middlewares
-    for middleware, applier in DEFAULT_MIDDLEWARE_APPLIERS.items():
-        middleware_appliers.setdefault(middleware, applier)
+    middlewares = middlewares or {}
 
     # Apply middlewares
-    for apply_middleware in middleware_appliers.values():
-        if isinstance(apply_middleware, type):
-            app.wsgi_app = apply_middleware(app.wsgi_app)
+    for middleware in middlewares.values():
+        if isinstance(middleware, type):
+            app.wsgi_app = middleware(app.wsgi_app)
         else:
-            apply_middleware(app)
+            middleware(app)

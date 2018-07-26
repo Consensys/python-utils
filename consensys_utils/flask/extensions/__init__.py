@@ -35,21 +35,16 @@ def initialize_swagger_extension(app):
         swagger.init_app(app)
 
 
-DEFAULT_EXTENSION_INITIATORS = {
+DEFAULT_EXTENSIONS = {
     'health': initialize_health_extension,
     'swagger': initialize_swagger_extension,
 }
 
 
-def initialize_extensions(app, extension_initiators=None):
+def initialize_extensions(app, extensions=None):
     """Initialize extensions on a Flask application
 
-    By default it applies
-
-    - ``health``: :meth:`initialize_health_extension`
-    - ``swagger``: :meth:`initialize_swagger_extension`
-
-    Example: Overriding an extension
+    Example: Adding an extension
 
     .. doctest::
         >>> from flask import Flask
@@ -59,9 +54,9 @@ def initialize_extensions(app, extension_initiators=None):
 
         >>> swag = Swagger(template={'version': '0.3.4-dev'})
 
-        >>> my_extension_initiators = {'swagger': swag}
+        >>> my_extensions = {'swagger': swag}
 
-        >>> initialize_extensions(app, my_extension_initiators)
+        >>> initialize_extensions(app, my_extensions)
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
@@ -73,15 +68,11 @@ def initialize_extensions(app, extension_initiators=None):
     :type extensions: dict
     """
 
-    extension_initiators = extension_initiators or {}
-
-    # Set default extensions initiator
-    for extension, initiator in DEFAULT_EXTENSION_INITIATORS.items():
-        extension_initiators.setdefault(extension, initiator)
+    extensions = extensions or {}
 
     # Initialize extensions
-    for initialize_extension in extension_initiators.values():
-        if hasattr(initialize_extension, 'init_app'):
-            initialize_extension.init_app(app)
+    for extension in extensions.values():
+        if hasattr(extension, 'init_app') and callable(extension.init_app):
+            extension.init_app(app)
         else:
-            initialize_extension(app)
+            extension(app)

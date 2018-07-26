@@ -11,7 +11,7 @@
 from flask import Blueprint
 
 
-def register_blueprints(app, blueprint_registers=None):
+def register_blueprints(app, blueprints=None):
     """Register blueprints on a Flask application
 
     Example:
@@ -33,18 +33,19 @@ def register_blueprints(app, blueprint_registers=None):
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
-    :param blueprint_registers: Blueprints to register on the application
+    :param blueprints: Blueprints to register on the application.
         Expects a dictionary in which values are either
-         - a  :class:`flask.Blueprint`
-         - a function that takes a :class:`flask.Flask` as argument
-    :type blueprint_registers: dict
+
+        - a :class:`flask.Blueprint`
+        - a function that takes a :class:`flask.Flask` as argument and eventually register a blueprint on it
+    :type blueprints: dict
     """
 
-    blueprint_registers = blueprint_registers or {}
+    blueprints = blueprints or {}
 
     # Set hooks
-    for register in blueprint_registers.values():
-        if isinstance(register, Blueprint):
-            app.register_blueprint(register)
+    for blueprint in blueprints.values():
+        if isinstance(blueprint, Blueprint):
+            app.register_blueprint(blueprint)
         else:
-            register(app)
+            blueprint(app)

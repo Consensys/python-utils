@@ -17,7 +17,7 @@ from ..logging import IDFilter, create_logger as _create_logger
 
 
 class RequestIDFilter(IDFilter):
-    """Logging filter that allows to enrich log with information related to the request"""
+    """Logging filter that allows to enrich log with Flask request ID"""
 
     def filter(self, record):
         """ Enrich log record with request ID"""
@@ -35,6 +35,8 @@ def create_logger(app, logger='app'):
 
     :param config: Logging configuration
     :type config: dict
+    :param logger: Name of the logger
+    :type logger: str
     """
 
     # In case a config has been provided we use custom logger creation

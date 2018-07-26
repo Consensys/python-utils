@@ -16,11 +16,11 @@ from flask.cli import CertParamType, _validate_key, get_debug_flag, \
 
 
 class ScriptInfo:
-    """Help object to deal with Flask applications
+    """Object that helps to load Flask applications in a CLI when using the application factory pattern
 
-    :param create_app: Optional function to create the application instance
+    :param create_app: Function that creates Flask application
     :type create_app: func
-    :param config_path: Optional .yaml configuration file path
+    :param config_path: Optional .yml configuration file path
     :type config_path: str
     """
 
@@ -35,12 +35,11 @@ class ScriptInfo:
         self._loaded_app = None
 
     def load_app(self):
-        """Loads the Flask app (if not yet loaded) and returns it.  Calling
-        this multiple times will just result in the already loaded app to
+        """Loads the Flask app (if not yet loaded).
+
+        Calling this multiple times will just result in the already loaded app to
         be returned.
         """
-        # __traceback_hide__ = True
-
         if self._loaded_app is not None:
             return self._loaded_app
 
@@ -61,7 +60,7 @@ class ScriptInfo:
 pass_script_info = click.make_pass_decorator(ScriptInfo, ensure=True)
 
 
-@click.command('run', short_help='Runs application')
+@click.command('run', short_help='Runs application it bases on')
 @click.option('--config', '-c', default=None,
               help='Application .yml configuration file')
 @click.option('--host', '-h', default='127.0.0.1',
@@ -120,7 +119,14 @@ def run_command(info, config, host, port, reload, debugger, eager_loading,
 
 
 class FlaskGroup(AppGroup):
-    """Special subclass of the :class:`AppGroup` that supports ConsenSys-Utils custom commands"""
+    """Special subclass of the :class:`AppGroup` that supports ConsenSys-Utils custom commands
+
+    :param create_app: An optional callback that is passed the script info and
+        returns the loaded app.
+    :param load_dotenv: Load the nearest :file:`.env` and :file:`.flaskenv`
+        files to set environment variables. Will also change the working
+        directory to the directory containing the first file found.
+    """
 
     def __init__(self, create_app=None, load_dotenv=True, **extra):
         params = list(extra.pop('params', None) or ())

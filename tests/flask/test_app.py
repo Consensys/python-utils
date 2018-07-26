@@ -14,7 +14,7 @@ import os
 import pytest
 from flask import current_app, jsonify
 
-from consensys_utils.flask import create_app
+from consensys_utils.flask import FlaskFactory
 from ..helpers import set_env_vars
 
 
@@ -28,8 +28,13 @@ def logging_config_file(files_dir):
     yield os.path.join(files_dir, 'logging.yml')
 
 
+@pytest.fixture(scope='session')
+def create_app():
+    yield FlaskFactory()
+
+
 @pytest.fixture(scope='function')
-def app(config_file, logging_config_file):
+def app(create_app, config_file, logging_config_file):
     reset_env_vars = set_env_vars([('LOGGING_CONFIG_PATH', logging_config_file)])
 
     _app = create_app(__name__, config_path=config_file)
@@ -44,7 +49,7 @@ def app(config_file, logging_config_file):
     reset_env_vars()
 
 
-def test_create_app(client, caplog):
+def test_factory(client, caplog):
     # Test healthcheck extension is on
     assert client.get('/test-healthcheck').status_code == 200
 

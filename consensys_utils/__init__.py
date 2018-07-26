@@ -8,6 +8,6 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-__version__ = '0.1.0-dev'
+__version__ = '0.1.0b1'
 
 __all__ = []

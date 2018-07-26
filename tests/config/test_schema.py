@@ -34,7 +34,7 @@ def test_logging_schema_invalid(config_files_dir):
         schema.load(raw_config)
 
 
-def test_gunicorn_schema(config_files_dir):
+def test_gunicorn_schema():
     schema = GunicornConfigSchema()
     raw_config = {
         'debugging': {
@@ -46,12 +46,12 @@ def test_gunicorn_schema(config_files_dir):
             ],
         },
         'worker-processes': {
-            'worker_class': 'async',
+            'worker_class': 'tornado',
         },
     }
 
     loaded_config = schema.load(raw_config)
     assert loaded_config['logger_class'] == 'consensys_utils.gunicorn.logging.Logger'
     assert loaded_config['reload']
-    assert loaded_config['worker_class'] == 'async'
+    assert loaded_config['worker_class'] == 'tornado'
     assert loaded_config['bind'] == ['127.0.2.1:8080']

@@ -23,9 +23,6 @@ jobs:
     - stage: test
       python: 3.6
       env: TOXENV=lint
-    - stage: test
-      python: 3.6
-      env: TOXENV=docs
     - stage: release
       python: 3.6
       install: skip

@@ -6,6 +6,19 @@ It is highly recommended you have some basic knowledge of `Flask`_ before using 
 
 .. _`Flask`: http://flask.pocoo.org/docs/1.0/
 
+Application
+~~~~~~~~~~~
+
+ConsenSys-Utils provides useful resources to implement the Flask application factory pattern
+
+.. py:currentmodule:: consensys_utils.flask
+
+.. autoclass:: FlaskFactory
+    :members:
+
+.. autoclass:: Flask
+    :members:
+
 Extensions
 ~~~~~~~~~~
 
@@ -58,4 +71,23 @@ ConsenSys-Utils implements functions to facilitate setting Flask hooks on an app
 
 .. autofunction:: set_request_id_hook
 
+Blueprints
+~~~~~~~~~~
 
+ConsenSys-Utils implements functions to facilitate registering blueprints on an application
+
+.. py:currentmodule:: consensys_utils.flask.blueprints
+
+.. autofunction:: register_blueprints
+
+Logging
+~~~~~~~
+
+ConsenSys-Utils implements resources to facilitate logging blueprints on an application
+
+.. py:currentmodule:: consensys_utils.flask.logging
+
+.. autoclass:: RequestIDFilter
+    :members:
+
+.. autofunction:: create_logger

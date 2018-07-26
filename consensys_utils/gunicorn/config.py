@@ -12,6 +12,7 @@ from gunicorn.config import Setting, validate_dict, Config as _Config
 
 
 class LoggingConfig(Setting):
+    """Custom setting for ``logging`` configuration"""
     name = "logging"
     section = "Logging"
     validator = validate_dict
@@ -22,6 +23,7 @@ class LoggingConfig(Setting):
 
 
 class WSGIConfig(Setting):
+    """Custom setting for ``wsgi`` configuration"""
     name = "wsgi"
     section = "WSGI"
     validator = validate_dict
@@ -32,4 +34,8 @@ class WSGIConfig(Setting):
 
 
 class Config(_Config):
-    """Ensure Above Settings have been correctly declared"""
+    """Gunicorn Configuration that ensures next settings are correctly discovered
+
+    - :meth:`LoggingConfig`
+    - :meth:`WSGIConfig`
+    """

@@ -20,7 +20,8 @@ class Logger(glogging.Logger):
     """Enrich Gunicorn logger class
 
     In particular it overrides the following methods
-        - `setup` to load logging configuration from a .yml file
+
+    - `setup` to load logging configuration from a .yml file
     """
 
     def setup(self, cfg):

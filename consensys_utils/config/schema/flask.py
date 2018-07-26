@@ -11,6 +11,7 @@
 import cfg_loader
 from marshmallow import fields
 
+from .gunicorn import GunicornConfigSchema
 from .logging import LoggingConfigSchema
 from .wsgi import WSGIConfigSchema
 
@@ -264,6 +265,10 @@ class ConfigSchema(cfg_loader.ConfigSchema):
         * - ``logging``
           - Logging configuration in :class:`LoggingConfigSchema` format
           -
+
+        * - ``gunicorn``
+          - Gunicorn configuration in :class:`GunicornConfigSchema` format
+          -
     """
 
     flask = cfg_loader.fields.UnwrapNested(FlaskConfigSchema,
@@ -273,3 +278,5 @@ class ConfigSchema(cfg_loader.ConfigSchema):
                          missing={})
 
     logging = fields.Nested(LoggingConfigSchema)
+
+    gunicorn = fields.Nested(GunicornConfigSchema)

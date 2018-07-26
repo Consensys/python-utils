@@ -46,6 +46,7 @@ extensions = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3/', None),
     'flask': ('http://flask.pocoo.org/docs/', None),
+    'cfg_loader': ('https://cfg-loader.readthedocs.io/en/stable/', None),
 }
 
 # Add any paths that contain templates here, relative to this directory.

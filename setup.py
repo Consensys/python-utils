@@ -24,7 +24,13 @@ config_dep = [
     'cfg-loader>=0.2.0',
 ]
 
-all_dep = config_dep
+flask_dep = [
+    'flask>=1.0.0',
+    'flask-restful>=0.3.6',
+    'flasgger>=0.8.0',
+    'healthcheck>=1.3.0',
+    'gunicorn>=19.7.1',
+]
 
 setup(
     name='ConsenSys-Utils',
@@ -54,7 +60,8 @@ setup(
             'sphinx_rtd_theme',
         ],
         'config': config_dep,
-        'all': all_dep,
+        'flask': config_dep + flask_dep,
+        'all': config_dep + flask_dep,
     },
     zip_safe=False,
     platforms='any',

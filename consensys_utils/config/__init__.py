@@ -13,8 +13,12 @@
 
 from .loader import create_yaml_config_loader
 from .schema import LoggingConfigSchema
+from .schema.flask import ConfigSchema
+
+DEFAULT_FLASK_CONFIG_LOADER = create_yaml_config_loader(ConfigSchema)
 
 __all__ = [
     'LoggingConfigSchema',
     'create_yaml_config_loader',
+    'DEFAULT_FLASK_CONFIG_LOADER',
 ]

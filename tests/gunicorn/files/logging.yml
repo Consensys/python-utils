@@ -1,0 +1,28 @@
+# Log configuration file
+
+version: 1
+
+disable_existing_loggers: True
+
+formatters:
+  line: # One line log formatter
+    class: logging.Formatter
+    format: "%(asctime)s %(name)-15s %(levelname)-8s %(message)s"
+
+handlers:
+  test:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: line
+
+loggers:
+ # Gunicorn loggers
+  gunicorn.error:
+    level: INFO
+    handlers: [test]
+    propagate: True # does not propagate to root (ensuring information is not logged twice)
+
+  gunicorn.access:
+    level: DEBUG
+    handlers: [test]
+    propagate: True # does not propagate to root (ensuring information is not logged twice)

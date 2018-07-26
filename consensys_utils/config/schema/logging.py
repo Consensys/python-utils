@@ -8,9 +8,7 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from ...utils import import_optional_module
-
-cfg_loader = import_optional_module('cfg_loader')
+import cfg_loader
 
 
 class LoggingConfigSchema(cfg_loader.ConfigSchema):

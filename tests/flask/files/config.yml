@@ -1,0 +1,23 @@
+# Section for Flask app configuration
+flask:
+  base:
+    APP_NAME: Test-App
+  session:
+    cookie:
+      HTTPONLY: true
+  health:
+    ENDPOINT_URL: /test-healthcheck
+  swagger:
+    specs:
+      - endpoint: test-swagger
+        route: /test-swagger.json
+    swagger_ui: true
+
+# Section listing WSGI middlewares configuration
+wsgi:
+  request_id:
+    REQUEST_ID_HEADER: X-Request-ID-test
+
+# Section concerning logging configuration
+logging:
+  LOGGING_CONFIG_PATH: ${LOGGING_CONFIG_PATH}

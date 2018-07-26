@@ -20,6 +20,7 @@ In particular ConsenSys-Utils helps you implement the Application factory patter
 #. Create a :file:`app.py`
 
     .. doctest::
+
         >>> from consensys_utils.flask import FlaskFactory
         >>> from consensys_utils.flask.cli import FlaskGroup
 

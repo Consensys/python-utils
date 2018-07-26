@@ -54,8 +54,7 @@ In particular ConsenSys-Utils helps you implement the Application factory patter
 
     - ``config.yml`` is your .yml configuration file
     - you don't need to set ``FLASK_APP`` environment variable
-    - ``run`` command reads ``FLASK_ENV`` environment variable. If ``FLASK_ENV=production``
-    the application will be run using a ``gunicorn`` server otherwise it uses ``werkzeug`` default development server
+    - ``run`` command reads ``FLASK_ENV`` environment variable. If ``FLASK_ENV=production`` the application will be run using a ``gunicorn`` server otherwise it uses ``werkzeug`` default development server
 
 Advanced usage
 ~~~~~~~~~~~~~~

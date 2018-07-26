@@ -66,3 +66,26 @@ Request ID
 
 .. autoclass:: RequestIDConfigSchema
     :members:
+
+Gunicorn
+````````
+
+Gunicorn configuration schemas
+
+.. py:currentmodule:: consensys_utils.config.schema.gunicorn
+
+.. autoclass:: GunicornConfigSchema
+
+.. autoclass:: ServerSocketConfigSchema
+
+.. autoclass:: WorkerProcessesConfigSchema
+
+.. autoclass:: LoggingConfigSchema
+
+.. autoclass:: ServerMechanicsConfigSchema
+
+.. autoclass:: ProcessNamingConfigSchema
+
+.. autoclass:: SSLConfigSchema
+
+.. autoclass:: SecurityConfigSchema

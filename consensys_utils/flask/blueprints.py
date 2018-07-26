@@ -24,11 +24,11 @@ def register_blueprints(app, blueprints=None):
         >>> my_bp1 = Blueprint('my-bp1', __name__)
         >>> my_bp2 = Blueprint('my-bp2', __name__)
 
-        >>> blueprint_registers = {
+        >>> blueprints = {
         ...     'my-bp1': lambda app: app.register_blueprint(my_bp1),
         ...     'my-bp2': my_bp2
         ... }
-        >>> register_blueprints(app, blueprint_registers)
+        >>> register_blueprints(app, blueprints)
 
 
     :param app: Flask application

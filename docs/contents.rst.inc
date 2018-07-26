@@ -6,13 +6,13 @@ User's Guide
 
     guide
 
-API Reference
--------------
+Resources
+---------
 
 .. toctree::
     :maxdepth: 2
 
-    api_reference
+    resources
 
 Contributing
 ------------

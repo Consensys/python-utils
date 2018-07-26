@@ -9,6 +9,7 @@
 """
 
 import os
+import re
 
 from setuptools import setup, find_packages
 
@@ -18,6 +19,27 @@ def read(file_name):
         return open(os.path.join(os.path.dirname(__file__), file_name)).read()
     except FileNotFoundError:
         return ''
+
+
+def find_version(file):
+    """Attempts to find the version number in a file.
+
+    Raises RuntimeError if not found.
+
+    :param file: File where to find version
+    :type file: str
+    """
+    version = ''
+    with open(file, 'r') as fp:
+        reg = re.compile(r'__version__ = [\'"]([^\'"]*)[\'"]')
+        for line in fp:
+            m = reg.match(line)
+            if m:
+                version = m.group(1)
+                break
+    if not version:
+        raise RuntimeError('Cannot find version information')
+    return version
 
 
 config_dep = [
@@ -34,7 +56,7 @@ flask_dep = [
 
 setup(
     name='ConsenSys-Utils',
-    version='0.1.0-dev',
+    version=find_version('consensys_utils/__init__.py'),
     license=read('LICENSE'),
     url='https://github.com/ConsenSys/consensys-utils',
     author='Nicolas Maurice',

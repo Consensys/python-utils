@@ -30,14 +30,14 @@ def logging_config_file(files_dir):
 
 @pytest.fixture(scope='session')
 def create_app():
-    yield FlaskFactory()
+    yield FlaskFactory(__name__)
 
 
 @pytest.fixture(scope='function')
 def app(create_app, config_file, logging_config_file):
     reset_env_vars = set_env_vars([('LOGGING_CONFIG_PATH', logging_config_file)])
 
-    _app = create_app(__name__, config_path=config_file)
+    _app = create_app(config_path=config_file)
 
     @_app.route('/')
     def test():

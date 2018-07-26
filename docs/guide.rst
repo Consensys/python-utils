@@ -25,7 +25,7 @@ In particular ConsenSys-Utils helps you implement the Application factory patter
         >>> from consensys_utils.flask.cli import FlaskGroup
 
         # Create an application factory
-        >>> create_app = FlaskFactory()
+        >>> create_app = FlaskFactory(__name__)
 
         # Declares a click application using ConsenSys-Utils click group
         >>> cli = FlaskGroup(create_app=create_app)
@@ -90,7 +90,7 @@ If you like you can define your own configuration loader.
     >>> yaml_config_loader = YamlConfigLoader(config_schema=MySchema)
 
     # Create an application factory
-    >>> create_app = FlaskFactory(yaml_config_loader=yaml_config_loader)
+    >>> create_app = FlaskFactory(__name__, yaml_config_loader=yaml_config_loader)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)
@@ -133,7 +133,7 @@ You can define your own WSGI middlewares and have it automatically applied on yo
     ... }
 
     # Create an application factory
-    >>> create_app = FlaskFactory(middlewares=middlewares)
+    >>> create_app = FlaskFactory(__name__, middlewares=middlewares)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)
@@ -155,7 +155,7 @@ You can declare your own flask extensions
     >>> my_extensions = {'swagger': swag}
 
     # Create an application factory
-    >>> create_app = FlaskFactory(extensions=my_extensions)
+    >>> create_app = FlaskFactory(__name__, extensions=my_extensions)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)
@@ -177,7 +177,7 @@ function taking a :class:`flask.Flask` application as an argument
     >>> my_extensions = {'login': init_login_extension}
 
     # Create an application factory
-    >>> create_app = FlaskFactory(extensions=my_extensions)
+    >>> create_app = FlaskFactory(__name__, extensions=my_extensions)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)
@@ -204,7 +204,7 @@ Set Application Hooks
     >>> my_hook_setters = {'log-request': set_log_request_hook}
 
     # Create an application factory
-    >>> create_app = FlaskFactory(hook_setters=my_hook_setters)
+    >>> create_app = FlaskFactory(__name__, hook_setters=my_hook_setters)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)
@@ -228,7 +228,7 @@ Register Blueprints
     ... }
 
     # Create an application factory
-    >>> create_app = FlaskFactory(blueprints=blueprints)
+    >>> create_app = FlaskFactory(__name__, blueprints=blueprints)
 
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(create_app=create_app)

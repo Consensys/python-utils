@@ -45,7 +45,7 @@ class FlaskFactory:
     .. doctest::
         >>> from consensys_utils.flask import FlaskFactory
 
-        >>> create_app = FlaskFactory()
+        >>> create_app = FlaskFactory(__name__)
 
     When creating an application a :class:`FlaskFactory` accomplishes next steps
 
@@ -102,8 +102,10 @@ class FlaskFactory:
         ...     default_hook_setters = {'request_id': set_custom_request_id_hook}
 
 
-        >>> create_app = CustomFlaskFactory()
+        >>> create_app = CustomFlaskFactory(__name__)
 
+    :param import_name: The name of the application package
+    :type import_name: str
     :param yaml_config_loader: Optional config loader
     :type yaml_config_loader: :class:`cfg_loader.loader.YamlConfigLoader`
     :param middlewares: Middlewares to apply on the application
@@ -135,9 +137,10 @@ class FlaskFactory:
     # Default blueprints to register on the application
     default_blueprints = {}
 
-    def __init__(self,
+    def __init__(self, import_name=None,
                  yaml_config_loader=DEFAULT_FLASK_CONFIG_LOADER,
                  middlewares=None, extensions=None, hook_setters=None, blueprints=None):
+        self.import_name = import_name
         self.yaml_config_loader = yaml_config_loader
 
         self.middlewares = self.default_middlewares.copy()
@@ -160,6 +163,8 @@ class FlaskFactory:
         :param import_name: The name of the application package
         :type import_name: str
         """
+
+        import_name = import_name or self.import_name
 
         # Declare Flask application
         self.app = self.flask_class(import_name, *args, **kwargs)
@@ -201,7 +206,7 @@ class FlaskFactory:
 
         register_blueprints(self.app, self.blueprints)
 
-    def create(self, import_name, *args, config=None, config_path=None, **kwargs):
+    def create(self, import_name=None, *args, config=None, config_path=None, **kwargs):
         """Create an application
         register_blueprints
         :param import_name: The name of the application package

@@ -51,7 +51,7 @@ flask_dep = [
     'flask-restful>=0.3.6',
     'flasgger>=0.8.0',
     'healthcheck>=1.3.0',
-    'gunicorn>=19.7.1',
+    'gunicorn>=19.9.0',
 ]
 
 setup(

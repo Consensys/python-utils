@@ -35,7 +35,7 @@ class LoggingConfigSchema(cfg_loader.ConfigSchema):
     accesslog = fields.Str()
     disable_redirect_access_to_syslog = fields.Bool(missing=False)
     access_log_format = fields.Str(missing='%(h)s %(l)s %(u)s %(t)s "%(r)s" %(s)s %(b)s "%(f)s" "%(a)s"')
-    errorlog = fields.Str()
+    errorlog = fields.Str(missing='-')
     loglevel = fields.Str(missing='info')
     capture_output = fields.Bool(missing=False)
     logger_class = fields.Str(missing='consensys_utils.gunicorn.logging.Logger')
@@ -106,7 +106,11 @@ class ServerMechanicsConfigSchema(cfg_loader.ConfigSchema):
     umask = fields.Int(missing=0)
     initgroups = fields.Bool(missing=False)
     tmp_upload_dir = fields.Str()
-    secure_scheme_headers = fields.Dict()
+    secure_scheme_headers = fields.Dict(missing={
+        'X-FORWARDED-PROTOCOL': 'ssl',
+        'X-FORWARDED-PROTO': 'https',
+        'X-FORWARDED-SSL': 'on',
+    })
     forwarded_allow_ips = fields.Str(missing="127.0.0.1")
     pythonpath = fields.Str()
     paste = fields.Str()
@@ -120,7 +124,7 @@ class ServerSocketConfigSchema(cfg_loader.ConfigSchema):
 
     c.f http://docs.gunicorn.org/en/stable/settings.html#server-socket
     """
-    bind = fields.List(fields.Str(), missing=['127.0.0.1:5000'])
+    bind = fields.List(fields.Str(), missing=[':5000'])
     backlog = fields.Int(missing=2048)
 
 
@@ -131,8 +135,8 @@ class WorkerProcessesConfigSchema(cfg_loader.ConfigSchema):
     """
     workers = fields.Int(missing=1)
     worker_class = fields.Str(missing='sync')
-    threads = fields.Int(missing=1000)
-    worker_connections = fields.Int(missing=0)
+    threads = fields.Int(missing=1)
+    worker_connections = fields.Int(missing=1000)
     max_requests = fields.Int(missing=0)
     max_requests_jitter = fields.Int(missing=0)
     timeout = fields.Int(missing=30)

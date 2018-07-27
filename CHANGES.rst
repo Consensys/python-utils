@@ -3,10 +3,14 @@ Changelog
 
 Here you can see the full list of changes between each releases of ConsenSys-Utils.
 
-Version 0.1.0
--------------
+Version 0.1.0b4
+---------------
 
-Unreleased
+Released on July 27th 2018
+
+Refactor
+
+- Config: update default values of Gunicorn configuration schema
 
 Version 0.1.0b3
 ---------------

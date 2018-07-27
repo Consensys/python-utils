@@ -9,7 +9,7 @@
 """
 
 from gunicorn.app import base
-from gunicorn.config import Config
+from .config import Config
 
 
 class WSGIApplication(base.Application):

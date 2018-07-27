@@ -8,6 +8,14 @@ Version 0.1.0
 
 Unreleased
 
+Fix
+
+- Gunicorn: fix gunicorn application to use ``consensys_utils.gunicorn.config.Config``
+
+Tests
+
+- Gunicorn: add tests for ``gunicorn.config.schema.GunicornConfigSchema``
+
 Version 0.1.0b2
 ---------------
 

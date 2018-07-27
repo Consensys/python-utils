@@ -43,7 +43,7 @@ def find_version(file):
 
 
 config_dep = [
-    'cfg-loader>=0.2.0',
+    'cfg-loader>=0.2.2',
 ]
 
 flask_dep = [

@@ -1,1 +1,1 @@
-worker_class = 'async'
+worker_class = 'gthread'

@@ -9,7 +9,7 @@
 """
 
 import pytest
-from gunicorn.config import Config
+from consensys_utils.gunicorn.config import Config
 from gunicorn.workers.gthread import ThreadWorker
 
 from consensys_utils.config.schema.gunicorn import GunicornConfigSchema

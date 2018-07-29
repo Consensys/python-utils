@@ -97,6 +97,7 @@ pytest:
 
 test: develop pytest
 
+# TODO: remove pytest options from coverage calculation
 run-coverage:
 	@$(COVERAGE) run -m pytest --doctest-modules --doctest-glob='*.rst'
 	@$(COVERAGE) report

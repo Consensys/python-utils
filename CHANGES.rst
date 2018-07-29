@@ -8,6 +8,10 @@ Version 0.1.0
 
 Unreleased
 
+Fix
+
+- Flask: Enhance consensys_utils.flask.cli.FlaskGroup
+
 Version 0.1.0b4
 ---------------
 

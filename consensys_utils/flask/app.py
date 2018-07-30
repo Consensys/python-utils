@@ -11,7 +11,7 @@
 import flask
 
 from .blueprints import register_blueprints
-from .config import Config, set_app_config
+from .config import set_app_config
 from .extensions import initialize_extensions, DEFAULT_EXTENSIONS
 from .hooks import set_hooks, DEFAULT_HOOK_SETTERS
 from .logging import create_logger
@@ -24,14 +24,11 @@ class Flask(flask.Flask):
 
     It applies a light overriding on top of :class`flask.Flask` to enable
 
-    - usage of `cfg-loader`_ features for configuration loading
     - usage of a logger that can be configured from .yml file
 
     .. _`cfg-loader`: https://cfg-loader.readthedocs.io/en/stable/
 
     """
-
-    config_class = Config
 
     @flask.helpers.locked_cached_property
     def logger(self):
@@ -45,7 +42,7 @@ class FlaskFactory:
     .. doctest::
         >>> from consensys_utils.flask import FlaskFactory
 
-        >>> create_app = FlaskFactory(__name__)
+        >>> app_factory = FlaskFactory(__name__)
 
     When creating an application a :class:`FlaskFactory` accomplishes next steps
 
@@ -102,7 +99,7 @@ class FlaskFactory:
         ...     default_hook_setters = {'request_id': set_custom_request_id_hook}
 
 
-        >>> create_app = CustomFlaskFactory(__name__)
+        >>> app_factory = CustomFlaskFactory(__name__)
 
     :param import_name: The name of the application package
     :type import_name: str
@@ -138,10 +135,15 @@ class FlaskFactory:
     default_blueprints = {}
 
     def __init__(self, import_name=None,
-                 yaml_config_loader=DEFAULT_FLASK_CONFIG_LOADER,
-                 middlewares=None, extensions=None, hook_setters=None, blueprints=None):
-        self.import_name = import_name
+                 yaml_config_loader=DEFAULT_FLASK_CONFIG_LOADER, default_config=None, config_path=None,
+                 middlewares=None, extensions=None, hook_setters=None, blueprints=None,
+                 **flask_kwargs):
+        self.import_name = flask_kwargs.pop('import_name', import_name)
+        self.flask_kwargs = flask_kwargs
+
         self.yaml_config_loader = yaml_config_loader
+        self.default_config = default_config or {}
+        self.config_path = config_path
 
         self.middlewares = self.default_middlewares.copy()
         self.middlewares.update(middlewares or {})
@@ -155,73 +157,88 @@ class FlaskFactory:
         self.blueprints = self.default_blueprints.copy()
         self.blueprints.update(blueprints or {})
 
-        self.app = None
+        self._row_config = None
+        self._app = None
 
-    def init(self, import_name, *args, **kwargs):
+    def init(self, **kwargs):
         """Instantiate Flask application
 
-        :param import_name: The name of the application package
-        :type import_name: str
+        :param kwargs: Keyword arguments to provide to the Flask application
+        :type kwargs: dict
         """
 
-        import_name = import_name or self.import_name
-
         # Declare Flask application
-        self.app = self.flask_class(import_name, *args, **kwargs)
-        return self.app
+        kwargs.update(self.flask_kwargs)
+        kwargs.setdefault('import_name', self.import_name)
+        self._app = self.flask_class(**kwargs)
 
-    def set_config(self, config=None, config_path=None):
-        """Set application config
+        return self._app
 
-        :param config: Optional application config
-        :type config: dict
+    def load_config(self, config_path=None):
+        """Load configuration
+
         :param config_path: Configuration path
         :type config_path: str
         """
+        config = self.default_config.copy()
+        config.update(self.yaml_config_loader.load(config_path or self.config_path))
+        return config
+
+    def set_config(self, config=None):
+        """Set application config
+
+        :param raw_config: Optional application config
+        :type raw_config: dict
+        """
+
+        self._row_config = self.default_config.copy()
+        self._row_config.update(config or {})
 
         # Set application configuration
-        set_app_config(self.app,
-                       config=config,
-                       yaml_config_loader=self.yaml_config_loader,
-                       config_path=config_path)
-        self.app.logger.info("Application configured for {env}...".format(env=self.app.config.get('ENV')))
+        set_app_config(self._app, config=self._row_config)
 
     def apply_middlewares(self):
         """Apply middlewares on application"""
 
-        apply_middlewares(self.app, self.middlewares)
+        apply_middlewares(self._app, self.middlewares)
 
     def initialize_extensions(self):
         """Initialize extensions on application"""
 
-        initialize_extensions(self.app, self.extensions)
+        initialize_extensions(self._app, self.extensions)
 
     def set_hooks(self):
         """Set hooks on application"""
 
-        set_hooks(self.app, self.hook_setters)
+        set_hooks(self._app, self.hook_setters)
 
     def register_blueprints(self):
         """Register blueprints on application"""
 
-        register_blueprints(self.app, self.blueprints)
+        register_blueprints(self._app, self.blueprints)
 
-    def create(self, import_name=None, *args, config=None, config_path=None, **kwargs):
+    def create_app(self, config_path=None, config=None, **kwargs):
         """Create an application
-        register_blueprints
-        :param import_name: The name of the application package
-        :type import_name: str
-        :param config: Optional application config
-        :type config: dict
+
         :param config_path: .yml configuration path
         :type config_path: str
+        :param config: Optional application config
+        :type config: dict
+        :param kwargs: Keyword arguments to provide to :attr:`flask_class` when
+            instantiating the application object
+        :type kwargs dict:
         """
 
-        # Declare Flask application
-        self.init(*args, import_name, **kwargs)
+        # Load configuration
+        config = config or self.load_config(config_path)
+        if config == self._row_config:
+            return self._app
+
+        # Declare new Flask application
+        self.init(**kwargs)
 
         # Set configuration
-        self.set_config(config, config_path)
+        self.set_config(config)
 
         # Apply middlewares
         self.apply_middlewares()
@@ -235,7 +252,7 @@ class FlaskFactory:
         # Register blueprints
         self.register_blueprints()
 
-        return self.app
+        return self._app
 
     def __call__(self, *args, **kwargs):
-        return self.create(*args, **kwargs)
+        return self.create_app(*args, **kwargs)

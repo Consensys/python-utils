@@ -29,30 +29,34 @@ def runner():
     return CliRunner()
 
 
-def create_app(config_path=None):
-    return Flask('test-app')
-
-
 @pytest.fixture(scope='function')
-def script_info():
-    yield ScriptInfo(create_app)
+def factory():
+    reset_env_vars = set_env_vars([('CONFIG_FILE', None)])
 
+    _mock_factory = MagicMock(return_value=Flask('test-app'))
 
-def test_script_info(script_info):
-    reset_env_vars = set_env_vars([('FLASK_DEBUG', '1')])
-    app = script_info.load_app()
-    assert app.debug
-
-    # Test the same app is returned when re-loading
-    set_env_vars([('FLASK_DEBUG', '0')])
-    assert script_info.load_app() == app
-    assert app.debug
+    yield _mock_factory
 
     reset_env_vars()
 
 
-def test_flask_group(runner):
-    cli = FlaskGroup(create_app=create_app)
+@pytest.fixture(scope='function')
+def script_info(factory):
+    yield ScriptInfo(factory)
+
+
+def test_script_info(script_info, factory):
+    reset_env_vars = set_env_vars([('FLASK_DEBUG', '1')])
+
+    app = script_info.load_app()
+    assert app.import_name == 'test-app'
+    factory.assert_called_once()
+
+    reset_env_vars()
+
+
+def test_flask_group(runner, factory):
+    cli = FlaskGroup(app_factory=factory)
     result = runner.invoke(cli, ['--help'])
     assert result.exit_code == 0
     assert 'run' in result.output
@@ -60,11 +64,11 @@ def test_flask_group(runner):
     assert 'routes' in result.output
 
 
-def test_run_command_development(runner, monkeypatch):
+def test_run_command_development(runner, factory, monkeypatch):
     run_simple_mock = MagicMock()
     monkeypatch.setattr(werkzeug.serving, 'run_simple', run_simple_mock)
 
-    cli = FlaskGroup(create_app=create_app)
+    cli = FlaskGroup(app_factory=factory)
 
     reset_env_vars = set_env_vars([('FLASK_ENV', 'development')])
 
@@ -88,11 +92,11 @@ def test_run_command_development(runner, monkeypatch):
     reset_env_vars()
 
 
-def test_run_command__production(runner, monkeypatch):
+def test_run_command__production(runner, factory, monkeypatch):
     run_mock = MagicMock()
     monkeypatch.setattr(consensys_utils.gunicorn.WSGIApplication, 'run', run_mock)
 
-    cli = FlaskGroup(create_app=create_app)
+    cli = FlaskGroup(app_factory=factory)
 
     # Test in production mode
     reset_env_vars = set_env_vars([('FLASK_ENV', 'production')])
@@ -114,7 +118,8 @@ def test_flask_group_with_config(runner, config_path, monkeypatch):
     monkeypatch.setattr(consensys_utils.gunicorn.WSGIApplication, 'run', run_mock)
 
     mock_create_app = MagicMock()
-    cli = FlaskGroup(create_app=mock_create_app)
+    mock_factory = MagicMock(create_app=mock_create_app, config_path=None)
+    cli = FlaskGroup(app_factory=mock_factory)
 
     # Ensure --config option is listed in command helpers
     result = runner.invoke(cli, ('run', '--help'))
@@ -124,8 +129,9 @@ def test_flask_group_with_config(runner, config_path, monkeypatch):
     # Test in production mode
     reset_env_vars = set_env_vars([('FLASK_ENV', 'production')])
     result = runner.invoke(cli, ('run', '--config', config_path))
+
     assert result.exit_code == 0
-    mock_create_app.assert_called_with(config_path)
+    assert mock_factory.config_path == config_path
 
     reset_env_vars()
 
@@ -139,16 +145,16 @@ def test_flask_group_app_cli(runner, config_path):
         click.echo('Test Command on %s' % current_app.import_name)
 
     # Declare FlaskGroup CLI
-    mock_create_app = MagicMock(return_value=app)
-    cli = FlaskGroup(create_app=mock_create_app)
+    mock_factory = MagicMock(return_value=app)
+    cli = FlaskGroup(app_factory=mock_factory)
 
     # Test command
     result = runner.invoke(cli, ('test', '--config', config_path))
-    mock_create_app.assert_called_with(config_path)
+    assert mock_factory.config_path == config_path
     assert result.exit_code == 0
     assert result.output == 'Test Command on test-app\n'
 
-    # Ensure --config option is listed in command helpers
+    # Ensure --config option is listed in command factory helpers
     result = runner.invoke(cli, ('test', '--help'))
     assert result.exit_code == 0
     assert '--config' in result.output

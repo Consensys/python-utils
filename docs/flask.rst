@@ -55,9 +55,6 @@ Config
 
 .. py:currentmodule:: consensys_utils.flask.config
 
-.. autoclass:: Config
-    :members:
-
 .. autofunction:: set_app_config
 
 Hooks

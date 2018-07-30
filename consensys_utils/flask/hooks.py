@@ -26,9 +26,9 @@ def set_request_id_hook(app):
             request.id = request.headers.get(app.config['wsgi']['request_id']['REQUEST_ID_HEADER']) or '-'
 
 
-DEFAULT_HOOK_SETTERS = {
-    'request_id': set_request_id_hook,
-}
+DEFAULT_HOOK_SETTERS = [
+    set_request_id_hook,
+]
 
 
 def set_hooks(app, hook_setters=None):
@@ -46,19 +46,19 @@ def set_hooks(app, hook_setters=None):
         ...     def log_request():
         ...         current_app.logger.debug(request)
 
-        >>> my_hook_setters = {'log-request': set_log_request_hook}
+        >>> my_hook_setters = [set_log_request_hook]
 
         >>> set_hooks(app, my_hook_setters)
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
     :param hook_setters: Hooks to set on the application.
-        Expects a dictionary of functions that takes a :class:`flask.Flask` as argument
-    :type hook_setters: dict
+        Expects a list of functions that takes a :class:`flask.Flask` as argument
+    :type hook_setters: list
     """
 
-    hook_setters = hook_setters or {}
+    hook_setters = hook_setters or []
 
     # Set hooks
-    for set_hook in hook_setters.values():
+    for set_hook in hook_setters:
         set_hook(app)

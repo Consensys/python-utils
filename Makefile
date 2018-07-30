@@ -92,14 +92,15 @@ auto-lint: autoflake autopep8
 
 lint: develop auto-lint
 
+TEST_FILE=
+TEST_OPTIONS=--doctest-modules --doctest-glob='*.rst'
 pytest:
-	@$(PYTEST) --doctest-modules --doctest-glob='*.rst'
+	@$(PYTEST) $(TEST_OPTIONS) $(TEST_FILE)
 
 test: develop pytest
 
-# TODO: remove pytest options from coverage calculation
 run-coverage:
-	@$(COVERAGE) run -m pytest --doctest-modules --doctest-glob='*.rst'
+	@$(COVERAGE) run -m pytest
 	@$(COVERAGE) report
 	@$(COVERAGE) html
 

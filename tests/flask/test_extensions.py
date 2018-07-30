@@ -79,10 +79,10 @@ def test_initialize_extensions(client, config):
     mock_ext = SimpleNamespace(init_app=init_app_mock)
 
     # Initialize extensions
-    extensions = {
-        'swagger': swagger.init_app,
-        'mock': mock_ext,
-    }
+    extensions = [
+        swagger.init_app,
+        mock_ext,
+    ]
 
     initialize_extensions(client.application, extensions=extensions)
 

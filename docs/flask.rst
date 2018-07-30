@@ -6,8 +6,8 @@ It is highly recommended you have some basic knowledge of `Flask`_ before using 
 
 .. _`Flask`: http://flask.pocoo.org/docs/1.0/
 
-Application
-~~~~~~~~~~~
+Application Factory
+~~~~~~~~~~~~~~~~~~~
 
 ConsenSys-Utils provides useful resources to implement the Flask application factory pattern
 
@@ -16,8 +16,23 @@ ConsenSys-Utils provides useful resources to implement the Flask application fac
 .. autoclass:: FlaskFactory
     :members:
 
+.. autoclass:: BaseFlaskFactory
+    :members:
+
 .. autoclass:: Flask
     :members:
+
+WSGI
+~~~~
+
+ConsenSys-Utils implements functions to facilitate Flask app decoration with WSGI middlewares
+
+.. py:currentmodule:: consensys_utils.flask.wsgi
+
+.. autofunction:: apply_middlewares
+
+.. autofunction:: apply_request_id_middleware
+
 
 Extensions
 ~~~~~~~~~~
@@ -54,9 +69,6 @@ Config
 ~~~~~~
 
 .. py:currentmodule:: consensys_utils.flask.config
-
-.. autoclass:: Config
-    :members:
 
 .. autofunction:: set_app_config
 

@@ -35,10 +35,10 @@ def initialize_swagger_extension(app):
         swagger.init_app(app)
 
 
-DEFAULT_EXTENSIONS = {
-    'health': initialize_health_extension,
-    'swagger': initialize_swagger_extension,
-}
+DEFAULT_EXTENSIONS = [
+    initialize_health_extension,
+    initialize_swagger_extension,
+]
 
 
 def initialize_extensions(app, extensions=None):
@@ -54,24 +54,24 @@ def initialize_extensions(app, extensions=None):
 
         >>> swag = Swagger(template={'version': '0.3.4-dev'})
 
-        >>> my_extensions = {'swagger': swag}
+        >>> my_extensions = [swag]
 
         >>> initialize_extensions(app, my_extensions)
 
     :param app: Flask application
     :type app: :class:`flask.Flask`
     :param extensions: Extensions to initialize on the application.
-        Expects a dictionary in which values are either
+        Expects a list of elements which are either
 
         - a Flask extension object (having a callable attribute ``init_app``)
         - a function that takes a :class:`flask.Flask` as argument and eventually initialize an extension on it
-    :type extensions: dict
+    :type extensions: list
     """
 
-    extensions = extensions or {}
+    extensions = extensions or []
 
     # Initialize extensions
-    for extension in extensions.values():
+    for extension in extensions:
         if hasattr(extension, 'init_app') and callable(extension.init_app):
             extension.init_app(app)
         else:

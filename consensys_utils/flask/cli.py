@@ -12,51 +12,28 @@ import click
 import flask
 from click.decorators import _param_memo
 from flask.cli import DispatchingApp, \
-    get_debug_flag, get_env, call_factory, \
-    shell_command, routes_command, CertParamType, _validate_key, \
+    get_debug_flag, get_env, shell_command, routes_command, CertParamType, _validate_key, \
     pass_script_info
 
 
 class ScriptInfo(flask.cli.ScriptInfo):
     """Object that helps to load Flask applications in a CLI when using the application factory pattern is used
 
-    :param create_app: Function that creates Flask application
-    :type create_app: func
+    :param app_factory: Flask application factory
+    :type app_factory: :class:'consensys_utils.flask.app.FlaskFactory'
     :param config_path: Optional .yml configuration file path
     :type config_path: str
     """
 
-    def __init__(self, create_app, config_path=None):
-        self.create_app = create_app
-        self.config_path = config_path
+    load_app = None
+
+    def __init__(self, app_factory, config_path=None):
+        # Set factory
+        app_factory.config_path = config_path
+        self.load_app = self.app_factory = app_factory
 
         # A dictionary
         self.data = {}
-        self._loaded_config_path = None
-        self._loaded_app = None
-
-    def load_app(self):
-        """Loads the Flask app (if not yet loaded).
-
-        Calling this multiple times will just result in the already loaded app to
-        be returned.
-        """
-        if self._loaded_app and self.config_path == self._loaded_config_path:
-            return self._loaded_app
-
-        app = call_factory(self, self.create_app, arguments=(self.config_path,))
-
-        debug = get_debug_flag()
-
-        # Update the app's debug flag through the descriptor so that other
-        # values repopulate as well.
-        if debug is not None:  # pragma: no branch
-            app.debug = debug
-
-        self._loaded_app = app
-        self._loaded_config_path = self.config_path
-
-        return app
 
 
 @click.command('run', short_help='Runs application')
@@ -123,10 +100,12 @@ config_option = click.Option(
 
 
 def with_config_path(f):
+    """Automatically inject configuration file path in the command context"""
+
     def invoke_with_config_path(ctx):
         info = ctx.find_object(ScriptInfo)
-        if info:  # pragma: no branch
-            info.config_path = ctx.params.pop('config', None)
+        if info and hasattr(info, 'app_factory'):  # pragma: no branch
+            info.app_factory.config_path = ctx.params.pop('config', None)
         return f(ctx)
 
     return invoke_with_config_path
@@ -135,18 +114,19 @@ def with_config_path(f):
 class FlaskGroup(flask.cli.FlaskGroup):
     """Special subclass of the :class:`flask.cli.FlaskGroup` that supports ConsenSys-Utils custom commands
 
-    :class:`FlaskGroup` automatically injects --config option on any command run from a :class:`FlaskGroup` CLI
+    :class:`FlaskGroup` automatically injects ``--config`` option on any command run from a :class:`FlaskGroup` CLI
 
     :param add_default_commands: if this is True then the default run and
         shell commands wil be added.
     :type add_default_commands: bool
-    :param create_app: An optional callback that is passed the script info and
-        returns the loaded app.
+    :param app_factory: Flask application factory
+    :type app_factory: :class:'consensys_utils.flask.app.FlaskFactory'
     """
 
-    def __init__(self, *args, create_app=None, add_default_commands=True, **extra):
-        super().__init__(*args, create_app=create_app,
-                         add_default_commands=False, **extra)
+    def __init__(self, *args, app_factory=None, add_default_commands=True, **extra):
+
+        self.factory = app_factory
+        super().__init__(*args, add_default_commands=False, **extra)
 
         if add_default_commands:  # pragma: no branch
             self.add_command(run_command)
@@ -155,26 +135,57 @@ class FlaskGroup(flask.cli.FlaskGroup):
 
     @staticmethod
     def add_config_option(cmd):
+        """Add ``--config`` option on a command
+
+        :param cmd: command to add --config option on
+        :type cmd: :class:`click.Command`
+        """
         if isinstance(cmd, click.Command) and config_option not in cmd.params:  # pragma: no branch
             _param_memo(cmd, config_option)
             cmd.invoke = with_config_path(cmd.invoke)
 
     def add_command(self, cmd, name=None):
+        """Add a command to the CLI
+
+        It automatically adds ``--config`` option on commands
+
+        :param cmd: command to add ``--config`` option on
+        :type cmd: :class:`click.Command`
+        :param name: Optional name of the command
+        :type name: str
+        """
         self.add_config_option(cmd)
         super().add_command(cmd, name)
 
     def get_command(self, ctx, name):
+        """Get a command on CLI
+
+        It automatically adds ``--config`` option to the retrieved command
+
+        :param ctx: CLI context
+        :type cmd: :class:`click.core.Context`
+        :param name: Optional name of the command
+        :type name: str
+        """
         rv = super().get_command(ctx, name)
         self.add_config_option(rv)
         return rv
 
     def list_commands(self, ctx):
+        """List all commands on the CLI
+
+        It automatically adds ``--config`` option to the retrieved command
+
+        :param ctx: CLI context
+        :type cmd: :class:`click.core.Context`
+        :param name: Optional name of the command
+        :type name: str
+        """
         rv = super().list_commands(ctx)
         for cmd in rv:
-            click.echo(cmd)
             self.add_config_option(cmd)
         return rv
 
     def main(self, args=None, **kwargs):
-        kwargs['obj'] = kwargs.get('obj') or ScriptInfo(create_app=self.create_app)
+        kwargs['obj'] = kwargs.get('obj') or ScriptInfo(app_factory=self.factory)
         return super().main(args, **kwargs)

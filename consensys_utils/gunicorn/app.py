@@ -9,11 +9,15 @@
 """
 
 from gunicorn.app import base
+
 from .config import Config
 
 
 class WSGIApplication(base.Application):
-    """An enhanced gunicorn WSGIApplication including ConsenSys-Utils features"""
+    """An enhanced gunicorn WSGIApplication including ConsenSys-Utils features
+
+
+    """
 
     def __init__(self, loader, *args, **kwargs):
         self.loader = loader
@@ -25,7 +29,7 @@ class WSGIApplication(base.Application):
 
     def load_config(self):
         # Load application config and update current config
-        cfg = self.load().config
+        cfg = self.loader.load_config()
 
         if 'gunicorn' in cfg:  # pragma: no branch
             for k, v in cfg['gunicorn'].items():

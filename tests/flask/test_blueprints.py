@@ -34,10 +34,10 @@ def test_register_blueprints(client):
         handler_mock()
         return jsonify({'data': 'test-value'})
 
-    test_blueprints = {
-        'test': lambda app: app.register_blueprint(test_blueprint),
-        'test2': test_blueprint2
-    }
+    test_blueprints = [
+        lambda app: app.register_blueprint(test_blueprint),
+        test_blueprint2,
+    ]
 
     register_blueprints(client.application, blueprints=test_blueprints)
 

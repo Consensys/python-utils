@@ -14,7 +14,7 @@ import os
 import pytest
 from flask import current_app, jsonify
 
-from consensys_utils.flask import FlaskFactory
+from consensys_utils.flask.app import BaseFlaskFactory, FlaskFactory
 from ..helpers import set_env_vars
 
 
@@ -35,15 +35,15 @@ def config_file(files_dir, logging_config_file):
 
 
 def test_factory(config_file):
-    factory = FlaskFactory('test-name')
+    factory = BaseFlaskFactory('test-name')
     assert factory.import_name == 'test-name'
     assert factory(config_path=config_file).import_name == 'test-name'
 
-    factory = FlaskFactory(default_config={}, import_name='test-name')
+    factory = BaseFlaskFactory(default_config={}, import_name='test-name')
     assert factory.import_name == 'test-name'
     assert factory(config_file).import_name == 'test-name'
 
-    factory = FlaskFactory('test-name')
+    factory = BaseFlaskFactory('test-name')
     assert factory.import_name == 'test-name'
     assert factory(config_file, import_name='test-name2').import_name == 'test-name2'
 

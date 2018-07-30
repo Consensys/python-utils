@@ -52,10 +52,10 @@ def test_apply_middlewares(client):
         def __init__(self, wsgi):
             custom_mock(wsgi)
 
-    middlewares = {
-        'mock': apply_middleware_mock,
-        'custom': CustomMiddlewareTest,
-    }
+    middlewares = [
+        apply_middleware_mock,
+        CustomMiddlewareTest,
+    ]
 
     apply_middlewares(client.application, middlewares=middlewares)
     assert apply_middleware_mock.call_args_list[0][0][0] == client.application

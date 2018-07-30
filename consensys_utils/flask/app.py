@@ -35,14 +35,14 @@ class Flask(flask.Flask):
         return create_logger(self)
 
 
-class FlaskFactory:
+class BaseFlaskFactory:
     """A factory to create Flask application
 
 
     .. doctest::
-        >>> from consensys_utils.flask import FlaskFactory
+        >>> from consensys_utils.flask.app import BaseFlaskFactory
 
-        >>> app_factory = FlaskFactory(__name__)
+        >>> app_factory = BaseFlaskFactory(__name__)
 
     When creating an application a :class:`FlaskFactory` accomplishes next steps
 
@@ -56,26 +56,13 @@ class FlaskFactory:
 
     #. Apply WSGI middlewares on the application
 
-        By default it applies next middlewares on an application
-
-        - ``request_id``: :meth:`consensys_utils.flask.wsgi.apply_request_id_middleware`
-
         You can refer to :meth:`consensys_utils.flask.wsgi.apply_middlewares` for more information
 
     #. Initialize extensions on the application
 
-        By default it applies next extensions on an application
-
-        - ``health``: :meth:`consensys_utils.flask.extensions.initialize_health_extension`
-        - ``swagger``: :meth:`consensys_utils.flask.extensions.initialize_swagger_extension`
-
         You can refer to :meth:`consensys_utils.flask.extensions.initialize_extensions` for more information
 
     #. Set hooks on the application
-
-        By default it applies next hook on the application
-
-        - ``request_id``: :meth:`consensys_utils.flask.hooks.set_request_id_hook`
 
         You can refer to :meth:`consensys_utils.flask.hooks.set_hooks` for more information
 
@@ -85,18 +72,18 @@ class FlaskFactory:
 
     It is possible to override default behavior by creating a new class that inherits from :class:`FlaskFactory`
 
-    Example: Overriding default hooks
+    Example: Adding default hooks
 
     .. doctest::
         >>> from flask import request
 
-        >>> def set_custom_request_id_hook(app):
+        >>> def set_foo_request_id_hook(app):
         ...     @app.before_request
         ...     def set_request_id():
-        ...         request .id = 'foo'
+        ...         request.id = 'foo'
 
-        >>> class CustomFlaskFactory(FlaskFactory):
-        ...     default_hook_setters = {'request_id': set_custom_request_id_hook}
+        >>> class CustomFlaskFactory(BaseFlaskFactory):
+        ...     default_hook_setters = [set_foo_request_id_hook]
 
 
         >>> app_factory = CustomFlaskFactory(__name__)
@@ -123,16 +110,16 @@ class FlaskFactory:
     flask_class = Flask
 
     # Default WSGI middleware to apply
-    default_middlewares = DEFAULT_MIDDLEWARES
+    default_middlewares = []
 
     # Default Flask extensions to initialize
-    default_extensions = DEFAULT_EXTENSIONS
+    default_extensions = []
 
     # Default hooks to set on the application
-    default_hook_setters = DEFAULT_HOOK_SETTERS
+    default_hook_setters = []
 
     # Default blueprints to register on the application
-    default_blueprints = {}
+    default_blueprints = []
 
     def __init__(self, import_name=None,
                  yaml_config_loader=DEFAULT_FLASK_CONFIG_LOADER, default_config=None, config_path=None,
@@ -145,19 +132,12 @@ class FlaskFactory:
         self.default_config = default_config or {}
         self.config_path = config_path
 
-        self.middlewares = self.default_middlewares.copy()
-        self.middlewares.update(middlewares or {})
+        self.middlewares = self.default_middlewares + (middlewares or [])
+        self.extensions = self.default_extensions + (extensions or [])
+        self.hook_setters = self.default_hook_setters + (hook_setters or [])
+        self.blueprints = self.default_blueprints + (blueprints or [])
 
-        self.extensions = self.default_extensions.copy()
-        self.extensions.update(extensions or {})
-
-        self.hook_setters = self.default_hook_setters.copy()
-        self.hook_setters.update(hook_setters or {})
-
-        self.blueprints = self.default_blueprints.copy()
-        self.blueprints.update(blueprints or {})
-
-        self._row_config = None
+        self._config = None
         self._app = None
 
     def init(self, **kwargs):
@@ -191,11 +171,11 @@ class FlaskFactory:
         :type raw_config: dict
         """
 
-        self._row_config = self.default_config.copy()
-        self._row_config.update(config or {})
+        self._config = self.default_config.copy()
+        self._config.update(config or {})
 
         # Set application configuration
-        set_app_config(self._app, config=self._row_config)
+        set_app_config(self._app, config=self._config)
 
     def apply_middlewares(self):
         """Apply middlewares on application"""
@@ -231,7 +211,7 @@ class FlaskFactory:
 
         # Load configuration
         config = config or self.load_config(config_path)
-        if config == self._row_config:
+        if config == self._config:
             return self._app
 
         # Declare new Flask application
@@ -256,3 +236,33 @@ class FlaskFactory:
 
     def __call__(self, *args, **kwargs):
         return self.create_app(*args, **kwargs)
+
+
+class FlaskFactory(BaseFlaskFactory):
+    """ConsenSys Flask factory. It inherits from :meth:`BaseFlaskFactory`
+
+    By default it applies
+
+    **Middlewares**
+
+    - :meth:`consensys_utils.flask.wsgi.apply_request_id_middleware`: A middleware to inject a custom Request ID header
+
+    **Extensions**
+
+    - :meth:`consensys_utils.flask.extensions.initialize_health_extension`: A Flask extension for health check
+    - :meth:`consensys_utils.flask.extensions.initialize_swagger_extension`: A Flask extension to add swagger
+
+    **Hooks**
+
+    - :meth:`consensys_utils.flask.hooks.set_request_id_hook`: Hook injecting Request ID header on``flask.request``
+
+    """
+
+    # Default WSGI middleware to apply
+    default_middlewares = DEFAULT_MIDDLEWARES
+
+    # Default Flask extensions to initialize
+    default_extensions = DEFAULT_EXTENSIONS
+
+    # Default hooks to set on the application
+    default_hook_setters = DEFAULT_HOOK_SETTERS

@@ -31,9 +31,7 @@ def test_set_hooks(client):
         def test():
             mock_hook()
 
-    hook_setters = {
-        'mock': set_mock_hook,
-    }
+    hook_setters = [set_mock_hook]
 
     set_hooks(client.application, hook_setters=hook_setters)
 

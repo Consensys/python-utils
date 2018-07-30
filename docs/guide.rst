@@ -128,9 +128,7 @@ You can define your own WSGI middlewares and have it automatically applied on yo
     ...              ('WWW-Authenticate', 'Basic realm="Login"')])
     ...         return [b'Login']
 
-    >>> middlewares = {
-    ...     'auth': AuthMiddleware,
-    ... }
+    >>> middlewares = [AuthMiddleware]
 
     # Create an application factory
     >>> app_factory = FlaskFactory(__name__, middlewares=middlewares)
@@ -152,7 +150,7 @@ You can declare your own flask extensions
 
     >>> swag = Swagger(template={'version': '0.3.4-dev'})
 
-    >>> my_extensions = {'swagger': swag}
+    >>> my_extensions = [swag]
 
     # Create an application factory
     >>> createapp_factory_app = FlaskFactory(__name__, extensions=my_extensions)
@@ -174,7 +172,7 @@ function taking a :class:`flask.Flask` application as an argument
     ...         login_manager = LoginManager()
     ...         login_manager.init_app(app)
 
-    >>> my_extensions = {'login': init_login_extension}
+    >>> my_extensions = [init_login_extension]
 
     # Create an application factory
     >>> app_factory = FlaskFactory(__name__, extensions=my_extensions)
@@ -201,7 +199,7 @@ Set Application Hooks
     ...     def log_request():
     ...         current_app.logger.debug(request)
 
-    >>> my_hook_setters = {'log-request': set_log_request_hook}
+    >>> my_hook_setters = [set_log_request_hook]
 
     # Create an application factory
     >>> app_factory = FlaskFactory(__name__, hook_setters=my_hook_setters)
@@ -222,10 +220,10 @@ Register Blueprints
     >>> my_bp1 = Blueprint('my-bp1', __name__)
     >>> my_bp2 = Blueprint('my-bp2', __name__)
 
-    >>> blueprints = {
-    ...     'my-bp1': my_bp1,
-    ...     'my-bp2': lambda app: app.register_blueprint(my_bp2),
-    ... }
+    >>> blueprints = [
+    ...        my_bp1,
+    ...     lambda app: app.register_blueprint(my_bp2),
+    ... ]
 
     # Create an application factory
     >>> app_factory = FlaskFactory(__name__, blueprints=blueprints)

@@ -8,13 +8,14 @@
     :license: BSD, see :ref:`license` for more details.
 """
 
-from .app import Flask, FlaskFactory
+from .app import Flask, BaseFlaskFactory, FlaskFactory
 from .extensions import initialize_extensions
 from .hooks import set_hooks
 from .wsgi import apply_middlewares
 
 __all__ = [
     'Flask',
+    'BaseFlaskFactory',
     'FlaskFactory',
     'apply_middlewares',
     'initialize_extensions',

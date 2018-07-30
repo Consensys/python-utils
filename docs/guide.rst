@@ -231,3 +231,27 @@ Register Blueprints
     # Declares a click application using ConsenSys-Utils click group
     >>> cli = FlaskGroup(app_factory=app_factory)
 
+Declare custom CLI commands
+```````````````````````````
+
+It is highly recommended that you declare custom CLI commands directly on the ``consensys_utils.flask.cli.FlaskGroup`` object.
+It automatically injects a ``--config`` option to the command for configuration file.
+
+.. doctest::
+    >>> from flask import Blueprint
+    >>> from flask.cli import with_appcontext
+    >>> from consensys_utils.flask import FlaskFactory
+    >>> from consensys_utils.flask.cli import FlaskGroup
+
+    # Create an application factory
+    >>> app_factory = FlaskFactory(__name__)
+
+    # Declares a click application using ConsenSys-Utils click group
+    >>> cli = FlaskGroup(app_factory=app_factory)
+
+    >>> @cli.command('test')
+    ... @with_appcontext
+    ... def custom_command():
+    ...    click.echo('Test Command on %s' % current_app.import_name)
+
+

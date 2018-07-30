@@ -114,7 +114,7 @@ def with_config_path(f):
 class FlaskGroup(flask.cli.FlaskGroup):
     """Special subclass of the :class:`flask.cli.FlaskGroup` that supports ConsenSys-Utils custom commands
 
-    :class:`FlaskGroup` automatically injects --config option on any command run from a :class:`FlaskGroup` CLI
+    :class:`FlaskGroup` automatically injects ``--config`` option on any command run from a :class:`FlaskGroup` CLI
 
     :param add_default_commands: if this is True then the default run and
         shell commands wil be added.
@@ -135,7 +135,7 @@ class FlaskGroup(flask.cli.FlaskGroup):
 
     @staticmethod
     def add_config_option(cmd):
-        """Add the --config option on a command
+        """Add ``--config`` option on a command
 
         :param cmd: command to add --config option on
         :type cmd: :class:`click.Command`
@@ -147,9 +147,9 @@ class FlaskGroup(flask.cli.FlaskGroup):
     def add_command(self, cmd, name=None):
         """Add a command to the CLI
 
-        It automatically adds the --config option to the added command
+        It automatically adds ``--config`` option on commands
 
-        :param cmd: command to add --config option on
+        :param cmd: command to add ``--config`` option on
         :type cmd: :class:`click.Command`
         :param name: Optional name of the command
         :type name: str
@@ -160,7 +160,7 @@ class FlaskGroup(flask.cli.FlaskGroup):
     def get_command(self, ctx, name):
         """Get a command on CLI
 
-        It automatically adds the --config option to the retrieved command
+        It automatically adds ``--config`` option to the retrieved command
 
         :param ctx: CLI context
         :type cmd: :class:`click.core.Context`
@@ -174,7 +174,7 @@ class FlaskGroup(flask.cli.FlaskGroup):
     def list_commands(self, ctx):
         """List all commands on the CLI
 
-        It automatically adds the --config option to the retrieved command
+        It automatically adds ``--config`` option to the retrieved command
 
         :param ctx: CLI context
         :type cmd: :class:`click.core.Context`

@@ -47,6 +47,8 @@ ConsenSys-Utils implements functions to facilitate initialization of Flask exten
 
 .. autofunction:: initialize_swagger_extension
 
+.. autofunction:: initialize_web3_extension
+
 ConsenSys-Utils defines a bench of `Flask` extensions that can be smoothly re-used.
 
 Healthcheck
@@ -63,6 +65,14 @@ Swagger
 .. py:currentmodule:: consensys_utils.flask.extensions.swagger
 
 .. autoclass:: Swagger
+    :members:
+
+Web3
+````
+
+.. py:currentmodule:: consensys_utils.flask.extensions.web3
+
+.. autoclass:: FlaskWeb3
     :members:
 
 Config

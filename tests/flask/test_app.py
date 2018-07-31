@@ -83,6 +83,9 @@ def test_app(client, caplog):
     # Test swagger extension is on
     assert client.get('/test-swagger.json').status_code == 200
 
+    # Test web3 extension is on
+    assert hasattr(client.application, 'web3')
+
     # Test custom logging is on
     with caplog.at_level(logging.DEBUG, logger='app'):
         client.get('/')

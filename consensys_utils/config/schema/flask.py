@@ -13,6 +13,7 @@ from marshmallow import fields
 
 from .gunicorn import GunicornConfigSchema
 from .logging import LoggingConfigSchema
+from .web3 import Web3ConfigSchema
 from .wsgi import WSGIConfigSchema
 
 
@@ -235,10 +236,13 @@ class FlaskConfigSchema(cfg_loader.ConfigSchema):
                                              missing=SessionConfigSchema().load({}), prefix='SESSION_')
     PERMANENT_SESSION_LIFETIME = fields.TimeDelta(missing=2678400)
 
+    # Flask Extensions
     health = fields.Nested(HealthCheckConfigSchema)
 
     swagger = fields.Nested(SwaggerConfigSchema,
                             attribute='SWAGGER')
+
+    web3 = fields.Nested(Web3ConfigSchema)
 
 
 class ConfigSchema(cfg_loader.ConfigSchema):

@@ -8,6 +8,12 @@ Version 0.2.0
 
 Unreleased
 
+Feat
+
+- Config: schema for web3 provider
+- Web3: implement create_provider function
+- Flask: implement Web3 extension
+
 Version 0.1.0
 -------------
 

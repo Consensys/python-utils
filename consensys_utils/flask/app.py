@@ -249,8 +249,9 @@ class FlaskFactory(BaseFlaskFactory):
 
     **Extensions**
 
-    - :meth:`consensys_utils.flask.extensions.initialize_health_extension`: A Flask extension for health check
-    - :meth:`consensys_utils.flask.extensions.initialize_swagger_extension`: A Flask extension to add swagger
+    - :meth:`consensys_utils.flask.extensions.initialize_health_extension`: Init a Flask extension for health check
+    - :meth:`consensys_utils.flask.extensions.initialize_swagger_extension`: Init a Swagger extension
+    - :meth:`consensys_utils.flask.extensions.initialize_web3_extension`: Init a FlaskWeb3 extension
 
     **Hooks**
 

@@ -12,6 +12,8 @@ flask:
       - endpoint: test-swagger
         route: /test-swagger.json
     swagger_ui: true
+  web3:
+    ETHEREUM_PROVIDER: test
 
 # Section listing WSGI middlewares configuration
 wsgi:

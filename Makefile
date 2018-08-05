@@ -40,9 +40,9 @@ venv:
 install-dev:
 	@$(PIP) install -q -e .[dev,all]
 
-develop: clean-pyc install-dev
+develop: clean-pyc
 
-init: venv develop
+init: venv install-dev
 
 build-docs:
 	@$(MAKE) -sC docs build-html
@@ -90,24 +90,24 @@ autopep8:
 
 auto-lint: autoflake autopep8
 
-lint: develop auto-lint
+lint: auto-lint
 
 TEST_FILE=
 TEST_OPTIONS=--doctest-modules --doctest-glob='*.rst'
 pytest:
 	@$(PYTEST) $(TEST_OPTIONS) $(TEST_FILE)
 
-test: develop pytest
+test: pytest
 
 run-coverage:
 	@$(COVERAGE) run -m pytest
 	@$(COVERAGE) report
 	@$(COVERAGE) html
 
-coverage: develop run-coverage
+coverage: run-coverage
 	@xdg-open htmlcov/index.html
 
 test-all:
 	@$(TOX)
 
-tox: develop test-all
+tox: test-all

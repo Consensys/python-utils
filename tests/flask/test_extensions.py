@@ -12,10 +12,11 @@ from types import SimpleNamespace
 from unittest.mock import MagicMock
 
 import pytest
-from flask import Flask
+from flask import Flask, jsonify
+from flask_web3 import current_web3
 
-from consensys_utils.flask.extensions import initialize_health_extension, initialize_swagger_extension, \
-    initialize_extensions
+from consensys_utils.flask.extensions import initialize_extensions, \
+    initialize_health_extension, initialize_swagger_extension, initialize_web3_extension
 from consensys_utils.flask.extensions.swagger import Swagger
 
 
@@ -45,6 +46,22 @@ def test_swagger_extension(client, config):
 
     assert hasattr(client.application, 'swag')
     assert client.get('/test-swagger').status_code == 200
+
+
+def test_web3_extension(client, config):
+    # Set config for swagger
+    config['web3'] = {'ETHEREUM_PROVIDER': 'test', 'ETHEREUM_ENDPOINT_URI': 'http://localhost:8535'}
+
+    # Initialize extension
+    initialize_web3_extension(client.application)
+
+    assert hasattr(client.application, 'web3')
+
+    @client.application.route('/test-web3')
+    def test_web3():
+        return jsonify(current_web3.eth.blockNumber)
+
+    assert client.get('/test-web3').status_code == 200
 
 
 def test_custom_swagger_extension(client, config):

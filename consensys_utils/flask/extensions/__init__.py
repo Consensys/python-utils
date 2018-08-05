@@ -16,6 +16,8 @@ __all__ = [
 def initialize_health_extension(app):
     """Initialize healthcheck extension
 
+    If ``health`` is missing in application configuration then this function has no effect
+
     :param app: Flask application
     :type app: :class:`flask.Flask`
     """
@@ -27,6 +29,8 @@ def initialize_health_extension(app):
 def initialize_swagger_extension(app):
     """Initialize Swagger extension
 
+    If ``SWAGGER`` is missing in application configuration then this function has no effect
+
     :param app: Flask application
     :type app: :class:`flask.Flask`
     """
@@ -35,9 +39,23 @@ def initialize_swagger_extension(app):
         swagger.init_app(app)
 
 
+def initialize_web3_extension(app):
+    """Initialize Web3 extension
+
+    If ``web3`` is missing in application configuration then this function has no effect
+
+    :param app: Flask application
+    :type app: :class:`flask.Flask`
+    """
+    if 'web3' in app.config:  # pragma: no branch
+        from .web3 import web3
+        web3.init_app(app)
+
+
 DEFAULT_EXTENSIONS = [
     initialize_health_extension,
     initialize_swagger_extension,
+    initialize_web3_extension,
 ]
 
 

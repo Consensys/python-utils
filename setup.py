@@ -46,12 +46,17 @@ config_dep = [
     'cfg-loader>=0.2.2',
 ]
 
-flask_dep = [
+flask_dep = config_dep + [
+    'flasgger>=0.8.0',
     'flask>=1.0.0',
     'flask-restful>=0.3.6',
-    'flasgger>=0.8.0',
-    'healthcheck>=1.3.0',
+    'flask-web3>=0.1.0',
     'gunicorn>=19.9.0',
+    'healthcheck>=1.3.0',
+]
+
+web3_dep = config_dep + [
+    'web3>=4.4.0',
 ]
 
 setup(
@@ -71,6 +76,7 @@ setup(
             'autoflake',
             'autopep8',
             'coverage',
+            'eth-tester[py-evm]==0.1.0-beta.26',
             'pytest>=3',
             'pytest-flask',
             'tox',
@@ -82,8 +88,8 @@ setup(
             'sphinx_rtd_theme',
         ],
         'config': config_dep,
-        'flask': config_dep + flask_dep,
-        'all': config_dep + flask_dep,
+        'flask': flask_dep,
+        'all': flask_dep,
     },
     zip_safe=False,
     platforms='any',

@@ -13,6 +13,7 @@ Feat
 - Config: schema for web3 provider
 - Web3: implement create_provider function
 - Flask: implement Web3 extension
+- Flask: implement Flask-Iterable extension
 
 Version 0.1.0
 -------------

@@ -15,26 +15,19 @@ import gunicorn.http as http
 import gunicorn.util as util
 from gunicorn.workers.sync import SyncWorker, StopWaiting
 
-
-class PauseIteration(Exception):
-    """Error indicating to pause iteration
-
-    :param timeout: Time before re-starting iteration
-    :type timeout: float
-    """
-
-    def __init__(self, timeout=None):
-        self.timeout = timeout
+from ..exceptions import PauseIteration
 
 
 class SyncIteratingWorker(SyncWorker):
-    """A Synchronous worker that allows to run an iterable WSGI application.
+    """A Gunicorn synchronous worker that allows to run an iterable WSGI application.
 
     It allows to run a loop process that iterates over a WSGI application object
     while allowing to process HTTP requests.
 
     Since the worker is synchronous it is thread safe to modify
-    the WSGI object either when iterating or when handling an HTTP request
+    the WSGI object either when iterating or when handling an HTTP request.
+
+    **Remark**
 
     Such a worker should not be considered highly performing as HTTP server but
     for dealing with a few requests to control the iterable WSGI application
@@ -50,16 +43,17 @@ class SyncIteratingWorker(SyncWorker):
         self.handle(listener, client, address)
 
     def iterate(self):
-        """Iterate on wsgi"""
+        """Iterate on WSGI object"""
+
         next(self.wsgi)
 
     def handle(self, listener, client, address):  # pragma: no cover, noqa: C901
         """Handle a request
 
-        Method is almost identical to :class:`SyncWorker` ``handle``.
+        Method is almost identical to :meth:`gunicorn.workers.sync.SyncWorker` one.
 
-        :class:`SyncIteratingWorker` needs to overide ``handle`` method because we use
-        non blocking socket connections thus we are more sensitive to :meth:`errno.EAGAIN` errors.
+        We need to overide this  method because we use non blocking socket connections
+        thus we are more sensitive to :meth:`errno.EAGAIN` errors.
         """
         req = None
         try:
@@ -96,6 +90,19 @@ class SyncIteratingWorker(SyncWorker):
             util.close(client)
 
     def run(self):  # noqa: C901
+        """Run the main worker loop
+
+        At each step of the loop it
+
+        1. Handles entry socket request if available
+        2. Iterate on the WSGI iterable object
+
+        If a :meth:`consensys_utils.exceptions.PauseIteration` is caught when iterating
+        on the WSGI object then the loop waits by entering a stale state freeing CPU usage.
+
+        Receiving an HTTP request instantaneously gets the loop out of stale state.
+        """
+
         # self.socket appears to lose its blocking status after
         # we fork in the arbiter. Reset it here.
         for s in self.sockets:

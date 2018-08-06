@@ -66,8 +66,19 @@ def test_web3_extension(client, config):
 
 
 def test_iterable_extension(client, config):
-    mock_next = MagicMock()
+    # Test with basic iterator
+    iterator = iter(range(3))
 
+    FlaskIterable(iterator, app=client.application)
+
+    assert hasattr(client.application, 'iterator')
+    assert hasattr(client.application, '__iter__')
+    assert hasattr(client.application, '__next__')
+
+    assert list(client.application) == [0, 1, 2]
+
+    # Test with more advanced iterator
+    mock_next = MagicMock()
     class IteratorTest:
         def __init__(self):
             self.meter = 0

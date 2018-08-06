@@ -3,6 +3,11 @@ Changelog
 
 Here you can see the full list of changes between each releases of ConsenSys-Utils.
 
+Version 0.2.0
+-------------
+
+Unreleased
+
 Version 0.2.0b1
 ---------------
 

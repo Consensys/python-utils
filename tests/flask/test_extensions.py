@@ -79,6 +79,7 @@ def test_iterable_extension(client, config):
 
     # Test with more advanced iterator
     mock_next = MagicMock()
+
     class IteratorTest:
         def __init__(self):
             self.meter = 0

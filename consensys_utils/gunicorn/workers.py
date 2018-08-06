@@ -47,7 +47,7 @@ class SyncIteratingWorker(SyncWorker):
 
         next(self.wsgi)
 
-    def handle(self, listener, client, address):  # pragma: no cover, noqa: C901
+    def handle(self, listener, client, address):  # noqa: C901, pragma: no cover
         """Handle a request
 
         Method is almost identical to :meth:`gunicorn.workers.sync.SyncWorker` one.

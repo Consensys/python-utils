@@ -32,3 +32,11 @@ Logging
 
 .. autoclass:: RequestIDLogger
     :members:
+
+Workers
+~~~~~~~
+
+.. py:currentmodule:: consensys_utils.gunicorn.workers
+
+.. autoclass:: SyncIteratingWorker
+    :members:

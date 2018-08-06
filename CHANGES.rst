@@ -14,6 +14,11 @@ Feat
 - Web3: implement create_provider function
 - Flask: implement Web3 extension
 - Flask: implement Flask-Iterable extension
+- Gunicorn: implement SyncIteratingWorker
+
+Chore
+
+- Examples: implement an example for an iterating worker
 
 Version 0.1.0
 -------------

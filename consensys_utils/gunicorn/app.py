@@ -10,14 +10,9 @@
 
 from gunicorn.app import base
 
-from .config import Config
-
 
 class WSGIApplication(base.Application):
-    """An enhanced gunicorn WSGIApplication including ConsenSys-Utils features
-
-
-    """
+    """An enhanced gunicorn WSGIApplication including ConsenSys-Utils features"""
 
     def __init__(self, loader, *args, **kwargs):
         self.loader = loader
@@ -25,6 +20,8 @@ class WSGIApplication(base.Application):
 
     def load_default_config(self):
         # init configuration
+        # we import here so we do not load custom settings if not used
+        from .config import Config
         self.cfg = Config(self.usage, prog=self.prog)
 
     def load_config(self):

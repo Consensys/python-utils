@@ -10,3 +10,4 @@ ConsenSys-Utils Resources
     config
     flask
     gunicorn
+    exceptions

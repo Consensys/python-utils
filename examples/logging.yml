@@ -1,0 +1,27 @@
+version: 1
+
+disable_existing_loggers: True
+
+formatters:
+  line: # One line log formatter
+    class: logging.Formatter
+    format: "%(asctime)s %(name)-20s %(levelname)-8s %(message)s"
+
+handlers:
+  base:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: line
+
+loggers:
+  examples:
+    level: DEBUG
+    handlers: [base]
+
+  gunicorn.error:
+    level: DEBUG
+    handlers: [base]
+
+  gunicorn.access:
+    level: DEBUG
+    handlers: [base]

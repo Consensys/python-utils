@@ -94,16 +94,16 @@ class BaseFlaskFactory:
     :type yaml_config_loader: :class:`cfg_loader.loader.YamlConfigLoader`
     :param middlewares: Middlewares to apply on the application
         (c.f :meth:`consensys_utils.flask.wsgi.apply_middlewares`)
-    :type middlewares: dict
+    :type middlewares: list
     :param extensions: Extensions to initiate on the application
         (c.f. :meth:`consensys_utils.flask.extensions.initialize_extensions`)
-    :type extensions: dict
+    :type extensions: list
     :param hook_setters: Hooks to set on the application
         (c.f. :meth:`consensys_utils.flask.hooks.set_hooks`)
-    :type hook_setters: dict
+    :type hook_setters: list
     :param blueprints: Blueprints to register on the application
         (c.f. :meth:`consensys_utils.flask.blueprints.register_blueprints`)
-    :type blueprints: dict
+    :type blueprints: list
     """
 
     # Flask class to use to instantiate applications

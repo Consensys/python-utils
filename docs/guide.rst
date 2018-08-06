@@ -8,8 +8,10 @@ About ConsenSys-Utils
 ConsenSys-Utils is a library including a set of utility resources used on a daily basis
 by ConsenSys France Engineering team.
 
-Create a Flask Application
-==========================
+Create a Flask Application with Factory pattern
+===============================================
+
+.. _`Create Flask Application Quickstart`:
 
 Quickstart
 ~~~~~~~~~~
@@ -78,6 +80,7 @@ validates against :class:`consensys_utils.config.schema.flask.ConfigSchema`.
 If you like you can define your own configuration loader.
 
 .. doctest::
+
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
     >>> from cfg_loader import ConfigSchema, YamlConfigLoader
@@ -103,6 +106,7 @@ Add WSGI Middlewares
 You can define your own WSGI middlewares and have it automatically applied on your application
 
 .. doctest::
+
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
     >>> import base64
@@ -144,6 +148,7 @@ Add Flasks Extension
 You can declare your own flask extensions
 
 .. doctest::
+
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
     >>> from flasgger import Swagger
@@ -162,6 +167,7 @@ You can declare your own flask extensions
 function taking a :class:`flask.Flask` application as an argument
 
 .. doctest::
+
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
 
@@ -191,6 +197,7 @@ Set Application Hooks
 `````````````````````
 
 .. doctest::
+
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
 
@@ -211,7 +218,9 @@ Set Application Hooks
 
 Register Blueprints
 ```````````````````
+
 .. doctest::
+
     >>> from flask import Blueprint
     >>> from consensys_utils.flask import FlaskFactory
     >>> from consensys_utils.flask.cli import FlaskGroup
@@ -238,6 +247,7 @@ It is highly recommended that you declare custom CLI commands directly on the ``
 It automatically injects a ``--config`` option to the command for configuration file.
 
 .. doctest::
+
     >>> from flask import Blueprint
     >>> from flask.cli import with_appcontext
     >>> from consensys_utils.flask import FlaskFactory
@@ -254,4 +264,58 @@ It automatically injects a ``--config`` option to the command for configuration 
     ... def custom_command():
     ...    click.echo('Test Command on %s' % current_app.import_name)
 
+Properly manage process to execute an iterator
+==============================================
 
+Quickstart
+~~~~~~~~~~
+
+ConsenSys-Utils provides some resources to properly maintain the execution of an iterator. In particular it allows to
+
+1. Run the iterator with a Gunicorn worker in a properly maintained process
+2. Connect a Flask application to the iterator enabling external control on iterator state
+
+It relies on two main resources
+
+- :meth:`consensys_utils.flask.extensions.iterable.FlaskIterable` that allows to transform a Flask application into an Iterable
+- :meth:`consensys_utils.gunicorn.workers.SyncIterableWorker` that allows to properly maintain a loop on an iterable WSGI object
+
+#. Create a :file:`app.py`
+
+    .. doctest::
+
+        >>> from flask import Flask
+        >>> from consensys_utils.flask.extensions.iterable import FlaskIterable
+        >>> from consensys_utils.flask import FlaskFactory
+        >>> from consensys_utils.flask.cli import FlaskGroup
+
+        # Create an iterator
+        >>> iterator = iter(range(3))
+
+        # Create an app factory and extend it to make it with a FlaskIterable extension
+        >>> iterable = FlaskIterable(iterator)
+        >>> app_factory = FlaskFactory(__name__, extensions=[iterable])
+
+        # Declares a click application using ConsenSys-Utils click group
+        >>> cli = FlaskGroup(app_factory=app_factory)
+
+#. Set a :file:`config.yml` choosing a :meth:`consensys_utils.gunicorn.workers.SyncIterableWorker` Gunicorn worker allowing to iterate ono the
+
+    .. code-block:: yaml
+
+        flask:
+          base:
+            APP_NAME: Iterating-App
+        gunicorn:
+          worker-processes:
+            worker_class: consensys_utils.gunicorn.workers.SyncIteratingWorker
+
+#. Define application entry point and start application as described in `Create Flask Application Quickstart`_
+
+Advanced usage
+~~~~~~~~~~~~~~
+
+For an advance use-case you can refer to the next example
+
+.. literalinclude:: ../examples/iterable.py
+    :language: python

@@ -26,19 +26,6 @@ def initialize_health_extension(app):
         health.init_app(app)
 
 
-def initialize_swagger_extension(app):
-    """Initialize Swagger extension
-
-    If ``SWAGGER`` is missing in application configuration then this function has no effect
-
-    :param app: Flask application
-    :type app: :class:`flask.Flask`
-    """
-    if 'SWAGGER' in app.config:  # pragma: no branch
-        from .swagger import swagger
-        swagger.init_app(app)
-
-
 def initialize_web3_extension(app):
     """Initialize Web3 extension
 
@@ -54,7 +41,6 @@ def initialize_web3_extension(app):
 
 DEFAULT_EXTENSIONS = [
     initialize_health_extension,
-    initialize_swagger_extension,
     initialize_web3_extension,
 ]
 

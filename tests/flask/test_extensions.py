@@ -16,9 +16,9 @@ from flask import Flask, jsonify
 from flask_web3 import current_web3
 
 from consensys_utils.flask.extensions import initialize_extensions, \
-    initialize_health_extension, initialize_swagger_extension, initialize_web3_extension
+    initialize_health_extension, initialize_web3_extension
 from consensys_utils.flask.extensions.iterable import FlaskIterable
-from consensys_utils.flask.extensions.swagger import Swagger
+from consensys_utils.flask.extensions.swagger import Swagger as ConsenSysSwagger, Swagger
 
 
 @pytest.fixture(scope='function')
@@ -43,7 +43,8 @@ def test_swagger_extension(client, config):
     config['SWAGGER'] = {'specs': [{'route': '/test-swagger', 'endpoint': 'test-swagger'}]}
 
     # Initialize extension
-    initialize_swagger_extension(client.application)
+    swag = ConsenSysSwagger()
+    swag.init_app(client.application)
 
     assert hasattr(client.application, 'swag')
     assert client.get('/test-swagger').status_code == 200

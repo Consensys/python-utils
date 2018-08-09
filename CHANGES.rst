@@ -3,10 +3,14 @@ Changelog
 
 Here you can see the full list of changes between each releases of ConsenSys-Utils.
 
-Version 0.2.0
--------------
+Version 0.2.0b3
+---------------
 
-Unreleased
+Released on August 9th 2018
+
+Chore
+
+- Requirements: add requirements for doc (required by readthedocs)
 
 Version 0.2.0b2
 ---------------

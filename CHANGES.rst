@@ -3,10 +3,15 @@ Changelog
 
 Here you can see the full list of changes between each releases of ConsenSys-Utils.
 
-Version 0.2.0
--------------
 
-Unreleased
+Version 0.2.0b2
+---------------
+
+Released on August 9th 2018
+
+Fix
+
+- Flask: remove swagger extension from default extensions
 
 Version 0.2.0b1
 ---------------

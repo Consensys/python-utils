@@ -45,8 +45,6 @@ ConsenSys-Utils implements functions to facilitate initialization of Flask exten
 
 .. autofunction:: initialize_health_extension
 
-.. autofunction:: initialize_swagger_extension
-
 .. autofunction:: initialize_web3_extension
 
 ConsenSys-Utils defines a bench of `Flask` extensions that can be smoothly re-used.

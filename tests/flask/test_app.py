@@ -80,9 +80,6 @@ def test_app(client, caplog):
     # Test healthcheck extension is on
     assert client.get('/test-healthcheck').status_code == 200
 
-    # Test swagger extension is on
-    assert client.get('/test-swagger.json').status_code == 200
-
     # Test web3 extension is on
     assert hasattr(client.application, 'web3')
 

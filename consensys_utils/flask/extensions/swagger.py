@@ -23,7 +23,3 @@ class Swagger(flasgger.Swagger):
         template.setdefault('tags', tags or [])
 
         super().__init__(*args, template=template, **kwargs)
-
-
-# Default swagger extension
-swagger = Swagger()
